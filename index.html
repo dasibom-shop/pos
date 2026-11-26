@@ -1476,13 +1476,15 @@ body.gate-locked .cart-bar{ display:none !important; }
   }
 
   /* ============ 3) 초기 상품 데이터 ============ */
-  /* 이미지: 지쿱 공식몰(vcshop.gcoop.com) 상품 페이지 대표 이미지 (2026-11-24 확인) */
+  /* 이미지: 지쿱 공식몰(vcshop.gcoop.com) 상품 페이지 대표 이미지 (2026-11-24 확인).
+     BV 배지(세트 상품 권장 소비자가 표시)가 찍혀 있던 6개 이미지는 배지만 지우고 인페인팅한
+     편집본을 img/ 폴더에 두고 상대경로로 쓴다(2026-11-26). */
   var IMG = {
     telomera: 'https://cdn.gcoopm.com/public/product/202606181722001339681831.jpg',
     telomeraGK: 'https://cdn.gcoopm.com/public/product/2026061817230225815756.jpg',
-    telSet4: 'https://cdn.gcoopm.com/public/product/202608311111471403610317.jpg',
-    telSet3: 'https://cdn.gcoopm.com/public/product/20260706111206629624934.jpg',
-    telPouch: 'https://cdn.gcoopm.com/public/product/202511121112251869103364.jpg',
+    telSet4: 'img/p-telomera-set4.jpg',
+    telSet3: 'img/p-telomera-set3.jpg',
+    telPouch: 'img/p-telomera-pouch.jpg',
     telMist: 'https://cdn.gcoopm.com/public/product/20260724112132630934272.png',
     telBooster: 'https://cdn.gcoopm.com/public/product/202605291807231583054034.jpg',
     telSerum: 'https://cdn.gcoopm.com/public/product/202605291806241586959580.jpg',
@@ -1495,8 +1497,8 @@ body.gate-locked .cart-bar{ display:none !important; }
     milk: 'https://cdn.gcoopm.com/public/product/20260608175835191017410.jpg',
     ck: 'https://cdn.gcoopm.com/public/product/202601261605581282153117.png',
     msm: 'https://cdn.gcoopm.com/public/product/20250610165614382025118.png',
-    msm6: 'https://cdn.gcoopm.com/public/product/202506101655042146540722.jpg',
-    msm12: 'https://cdn.gcoopm.com/public/product/202506100922571467359709.jpg',
+    msm6: 'img/p-msm-6.jpg',
+    msm12: 'img/p-msm-12.jpg',
     activeds: 'https://cdn.gcoopm.com/public/product/20250429165335740836596.jpg',
     cafe3in1: 'https://cdn.gcoopm.com/public/product/20260309153121930509872.jpg',
     cafeblack: 'https://cdn.gcoopm.com/public/product/202311101332401118170726.jpg',
@@ -1505,7 +1507,7 @@ body.gate-locked .cart-bar{ display:none !important; }
     white: 'https://cdn.gcoopm.com/public/product/20240628170004265257418.jpg',
     red: 'https://cdn.gcoopm.com/public/product/20240628125735329837074.jpg',
     green: 'https://cdn.gcoopm.com/public/product/202406281258581649512371.jpg',
-    detox: 'https://cdn.gcoopm.com/public/product/202601121533511504018940.jpg',
+    detox: 'img/p-elixir-detox.jpg',
     lapy: 'https://cdn.gcoopm.com/public/product/202406281619191485315784.jpg',
     pad: 'https://cdn.gcoopm.com/public/product/202406281634011085423214.jpg',
     wave: 'https://cdn.gcoopm.com/public/product/202611031125151885573336.jpg',
@@ -1518,8 +1520,19 @@ body.gate-locked .cart-bar{ display:none !important; }
      3: 효능별 10종 카테고리 → 지쿱 라인별 6종 카테고리 + 라인 순서 정돈 /
      4: 세대 3 이하 저장소에 남아 있던 옛 카테고리 이름(오메가3·유산균·비타민·미네랄·홍삼·인삼 등)을
         지우고, 기본 품목의 카테고리를 라인 6종으로 일괄 갱신 + 진열 순서 재정돈
-     5: 주문번호 DB-YYMMDD-001 순번 정리 / 6: 지점별 재고(inventory)·입출고 이력(stockLogs) 구조 추가) */
-  var SEED_VERSION = 6;
+     5: 주문번호 DB-YYMMDD-001 순번 정리 / 6: 지점별 재고(inventory)·입출고 이력(stockLogs) 구조 추가 /
+     7: BV 배지가 찍힌 세트 상품 대표 이미지 6종을 편집본(img/ 로컬)으로 교체) */
+  var SEED_VERSION = 7;
+
+  /* BV 배지가 있던 옛 대표 이미지 주소 — 이미 기기에 저장된 품목도 한 번만 편집본으로 바꾼다 */
+  var BV_OLD_IMG = {
+    'p-telomera-set4': 'https://cdn.gcoopm.com/public/product/202608311111471403610317.jpg',
+    'p-telomera-set3': 'https://cdn.gcoopm.com/public/product/20260706111206629624934.jpg',
+    'p-telomera-pouch': 'https://cdn.gcoopm.com/public/product/202511121112251869103364.jpg',
+    'p-elixir-detox': 'https://cdn.gcoopm.com/public/product/202601121533511504018940.jpg',
+    'p-msm-6': 'https://cdn.gcoopm.com/public/product/202506101655042146540722.jpg',
+    'p-msm-12': 'https://cdn.gcoopm.com/public/product/202506100922571467359709.jpg'
+  };
 
   /* ---- 재고 입출고 ---- */
   var STOCK_VERSION = 1;
@@ -2181,6 +2194,10 @@ body.gate-locked .cart-bar{ display:none !important; }
       ['image', 'summary', 'ingredients', 'usage', 'caution'].forEach(function (k) {
         if (!cur[k] && sp[k]) { cur[k] = sp[k]; out.filled++; }
       });
+      /* BV 배지가 찍혀 있던 세트 상품 이미지는 저장된 옛 주소여도 편집본(img/)으로 바꾼다 */
+      if (!byName && BV_OLD_IMG[sp.id] && cur.image === BV_OLD_IMG[sp.id] && sp.image !== cur.image) {
+        cur.image = sp.image; out.filled++;
+      }
       if (!cur.points || !cur.points.length) { cur.points = sp.points; out.filled++; }
       /* 카테고리는 파일의 기본값이 기준이다. 세대가 바뀐 저장소(seedVersion < SEED_VERSION)에서는
          기본 품목의 category를 기존 값이 무엇이든 새 기본 카테고리로 예외 없이 맞춘다 —
