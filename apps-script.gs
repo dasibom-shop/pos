@@ -11,9 +11,21 @@
  *       - 액세스 권한: 모든 사용자(Anyone)      ← 폰·태블릿에서 접속하려면 필수
  *  5. 배포 후 나오는 "웹 앱 URL"(.../exec)을 POS 관리자 → 동기화 화면에 붙여넣습니다.
  *
- *  시트는 처음 요청이 들어올 때 Products / Orders / SyncLog 세 개가 자동 생성됩니다.
+ *  시트는 처음 요청이 들어올 때 Products / Orders / Inventory / StockLogs / SyncLog
+ *  다섯 개가 자동 생성됩니다.
  *  (스프레드시트에 붙이지 않고 독립 스크립트로 만들었다면, 첫 실행 시 시트를 새로 만들어
  *   그 ID를 스크립트 속성에 저장합니다.)
+ *
+ *  ■ 읽기(GET) 액션
+ *   ?action=ping        연결 확인 + 시트별 건수
+ *   ?action=products    품목
+ *   ?action=orders      주문 (since=타임스탬프 로 그 이후만)
+ *   ?action=inventory   지점별 재고 + 입출고 이력
+ *   ?action=all         품목·주문·재고·이력을 한 번에 (POS 모니터링 새로고침용)
+ *
+ *  ■ 쓰기(POST) 액션 (text/plain + JSON 본문)
+ *   products.save / products.replace, orders.push / order.upsert, order.status, order.delete,
+ *   stock.push (재고 + 이력), inventory.save, stock.logs.push
  *
  *  ■ 주의
  *  - Products 시트에는 매입가(회원가)가 들어 있습니다. 이 시트는 절대 공유하지 마세요.
@@ -27,8 +39,11 @@ var CONFIG = {
   SPREADSHEET_ID: '',
   PRODUCTS_SHEET: 'Products',
   ORDERS_SHEET: 'Orders',
+  INVENTORY_SHEET: 'Inventory',
+  STOCK_SHEET: 'StockLogs',
   LOG_SHEET: 'SyncLog',
-  MAX_ORDERS: 20000
+  MAX_ORDERS: 20000,
+  MAX_STOCK_LOGS: 50000
 };
 
 var PRODUCT_HEADERS = [
@@ -46,6 +61,17 @@ var ORDER_HEADERS = [
   'device', 'manager', 'updatedAt', 'syncedAt'
 ];
 
+/* Inventory: 지점×품목 한 줄. key = branchId|productId */
+var INVENTORY_HEADERS = [
+  'key', 'branchId', 'branch', 'productId', 'name', 'qty', 'safetyQty', 'updatedAt'
+];
+
+/* StockLogs: 입출고 이력 한 줄 */
+var STOCK_HEADERS = [
+  'id', 'at', 'datetime', 'branchId', 'branch', 'productId', 'name', 'type',
+  'qty', 'before', 'after', 'memo', 'orderId', 'orderNo', 'device', 'manager', 'syncedAt'
+];
+
 /* ============================ 진입점 ============================ */
 
 function doGet(e) {
@@ -60,9 +86,15 @@ function doGet(e) {
       out.products = readProducts_();
     } else if (action === 'orders') {
       out.orders = readOrders_(p.since);
+    } else if (action === 'inventory' || action === 'stock') {
+      out.inventory = readInventory_();
+      out.stockLogs = readStockLogs_(p.since);
+      out.counts = counts_();
     } else if (action === 'all') {
       out.products = readProducts_();
       out.orders = readOrders_(p.since);
+      out.inventory = readInventory_();
+      out.stockLogs = readStockLogs_(p.since);
       out.counts = counts_();
     } else {
       throw new Error('알 수 없는 action: ' + action);
@@ -90,6 +122,19 @@ function doPost(e) {
       result = updateOrderStatus_(body.id, body.status, body.updatedAt);
     } else if (action === 'order.delete') {
       result = deleteOrder_(body.id);
+    } else if (action === 'stock.push' || action === 'inventory.save' || action === 'stock.logs.push') {
+      var invRows = body.inventory || [];
+      var logRows = body.logs || body.stockLogs || [];
+      var invRes = invRows.length ? saveInventory_(invRows) : { created: 0, updated: 0 };
+      var logRes = logRows.length ? saveStockLogs_(logRows) : { created: 0, updated: 0 };
+      result = {
+        inventory: invRes.total != null ? invRes.total : readInventory_().length,
+        inventoryCreated: invRes.created || 0,
+        inventoryUpdated: invRes.updated || 0,
+        stockLogs: logRes.total != null ? logRes.total : readStockLogs_().length,
+        logsCreated: logRes.created || 0,
+        logsUpdated: logRes.updated || 0
+      };
     } else {
       throw new Error('알 수 없는 action: ' + action);
     }
@@ -112,9 +157,11 @@ function doOptions() {
 function setup() {
   ensureProducts_();
   ensureOrders_();
+  ensureInventory_();
+  ensureStockLogs_();
   ensureLog_();
   log_('setup', '시트 초기화');
-  return 'Products / Orders / SyncLog 시트를 준비했습니다.';
+  return 'Products / Orders / Inventory / StockLogs / SyncLog 시트를 준비했습니다.';
 }
 
 /** 브라우저에서 URL을 열었을 때 동작 확인용 (배포 후 주소창에 ?action=ping) */
@@ -186,6 +233,8 @@ function sheet_(name, headers) {
 
 function ensureProducts_() { return sheet_(CONFIG.PRODUCTS_SHEET, PRODUCT_HEADERS); }
 function ensureOrders_() { return sheet_(CONFIG.ORDERS_SHEET, ORDER_HEADERS); }
+function ensureInventory_() { return sheet_(CONFIG.INVENTORY_SHEET, INVENTORY_HEADERS); }
+function ensureStockLogs_() { return sheet_(CONFIG.STOCK_SHEET, STOCK_HEADERS); }
 function ensureLog_() { return sheet_(CONFIG.LOG_SHEET, ['at', 'action', 'detail']); }
 
 function readRows_(sh) {
@@ -484,6 +533,161 @@ function deleteOrder_(id) {
   return { deleted: 1 };
 }
 
+/* ============================ Inventory (지점별 재고) ============================ */
+
+function invKey_(branchId, productId) {
+  return String(branchId || '').trim() + '|' + String(productId || '').trim();
+}
+
+function indexByKey_(sh) {
+  var last = sh.getLastRow();
+  var map = {};
+  if (last < 2) return map;
+  var keys = sh.getRange(2, 1, last - 1, 1).getValues();
+  for (var i = 0; i < keys.length; i++) {
+    var k = String(keys[i][0] || '').trim();
+    if (k) map[k] = i + 2;
+  }
+  return map;
+}
+
+function readInventory_() {
+  var sh = ensureInventory_();
+  return readRows_(sh).map(function (r) {
+    return {
+      branchId: String(r.branchId || ''),
+      branch: String(r.branch || ''),
+      productId: String(r.productId || ''),
+      name: String(r.name || ''),
+      qty: num_(r.qty),
+      safetyQty: num_(r.safetyQty),
+      updatedAt: num_(r.updatedAt)
+    };
+  }).filter(function (r) { return r.branchId && r.productId; });
+}
+
+/* 지점×품목 단위로 upsert. 시트 쪽이 더 최신이면 그대로 둔다. */
+function saveInventory_(rows) {
+  var sh = ensureInventory_();
+  var map = indexByKey_(sh);
+  var newRows = [];
+  var created = 0, updated = 0, kept = 0, skipped = 0;
+
+  (rows || []).forEach(function (r) {
+    if (!r || !r.branchId || !r.productId) { skipped++; return; }
+    var row = {
+      key: invKey_(r.branchId, r.productId),
+      branchId: String(r.branchId),
+      branch: String(r.branch || ''),
+      productId: String(r.productId),
+      name: String(r.name || ''),
+      qty: num_(r.qty),
+      safetyQty: num_(r.safetyQty),
+      updatedAt: num_(r.updatedAt) || Date.now()
+    };
+    var rowNum = map[row.key];
+    if (rowNum) {
+      var ex = rowToObject_(sh, rowNum, INVENTORY_HEADERS);
+      if (num_(ex.updatedAt) > row.updatedAt) { kept++; return; }
+      writeRow_(sh, rowNum, row, INVENTORY_HEADERS);
+      updated++;
+    } else {
+      newRows.push(row);
+      created++;
+    }
+  });
+
+  if (newRows.length) {
+    var start = sh.getLastRow() + 1;
+    sh.getRange(start, 1, newRows.length, INVENTORY_HEADERS.length)
+      .setValues(newRows.map(function (r) { return headersToValues_(r, INVENTORY_HEADERS); }));
+    newRows.forEach(function (r) { map[r.key] = 0; });
+  }
+  log_('stock.push.inventory', 'created=' + created + ' updated=' + updated + ' kept=' + kept);
+  return { created: created, updated: updated, kept: kept, skipped: skipped, total: Math.max(0, sh.getLastRow() - 1) };
+}
+
+/* ============================ StockLogs (입출고 이력) ============================ */
+
+function readStockLogs_(since) {
+  var sh = ensureStockLogs_();
+  var sinceNum = num_(since);
+  return readRows_(sh).map(function (r) {
+    return {
+      id: String(r.id || ''),
+      at: num_(r.at),
+      datetime: String(r.datetime || ''),
+      branchId: String(r.branchId || ''),
+      branch: String(r.branch || ''),
+      productId: String(r.productId || ''),
+      name: String(r.name || ''),
+      type: String(r.type || 'adjust'),
+      qty: num_(r.qty),
+      before: num_(r.before),
+      after: num_(r.after),
+      memo: String(r.memo || ''),
+      orderId: String(r.orderId || ''),
+      orderNo: String(r.orderNo || ''),
+      device: String(r.device || ''),
+      manager: String(r.manager || ''),
+      syncedAt: num_(r.syncedAt)
+    };
+  }).filter(function (l) { return l.id; }).filter(function (l) {
+    if (!sinceNum) return true;
+    return num_(l.at) >= sinceNum;
+  });
+}
+
+/* 이력 id 단위로 upsert — 같은 건이 두 번 올라와도 줄이 늘지 않는다. */
+function saveStockLogs_(logs) {
+  var sh = ensureStockLogs_();
+  var map = indexById_(sh);
+  var newRows = [];
+  var created = 0, updated = 0, skipped = 0;
+
+  (logs || []).forEach(function (l) {
+    if (!l || !l.id) { skipped++; return; }
+    var row = {
+      id: String(l.id),
+      at: num_(l.at) || Date.now(),
+      datetime: l.datetime ? String(l.datetime) : fmtDateTime_(num_(l.at) || Date.now()),
+      branchId: String(l.branchId || ''),
+      branch: String(l.branch || ''),
+      productId: String(l.productId || ''),
+      name: String(l.name || ''),
+      type: String(l.type || 'adjust'),
+      qty: num_(l.qty),
+      before: num_(l.before),
+      after: num_(l.after),
+      memo: String(l.memo || ''),
+      orderId: String(l.orderId || ''),
+      orderNo: String(l.orderNo || ''),
+      device: String(l.device || ''),
+      manager: String(l.manager || ''),
+      syncedAt: num_(l.syncedAt) || Date.now()
+    };
+    var rowNum = map[row.id];
+    if (rowNum) {
+      writeRow_(sh, rowNum, row, STOCK_HEADERS);
+      updated++;
+    } else {
+      newRows.push(row);
+      created++;
+    }
+  });
+
+  if (newRows.length) {
+    if (sh.getLastRow() + newRows.length > CONFIG.MAX_STOCK_LOGS + 1) {
+      throw new Error('입출고 이력 행이 너무 많습니다. 시트를 정리해 주세요.');
+    }
+    var start = sh.getLastRow() + 1;
+    sh.getRange(start, 1, newRows.length, STOCK_HEADERS.length)
+      .setValues(newRows.map(function (r) { return headersToValues_(r, STOCK_HEADERS); }));
+  }
+  log_('stock.push.logs', 'created=' + created + ' updated=' + updated + ' skipped=' + skipped);
+  return { created: created, updated: updated, skipped: skipped, total: Math.max(0, sh.getLastRow() - 1) };
+}
+
 /* ============================ 유틸 ============================ */
 
 function rowToObject_(sh, rowNum, headers) {
@@ -505,6 +709,8 @@ function counts_() {
   return {
     products: Math.max(0, ensureProducts_().getLastRow() - 1),
     orders: Math.max(0, ensureOrders_().getLastRow() - 1),
+    inventory: Math.max(0, ensureInventory_().getLastRow() - 1),
+    stockLogs: Math.max(0, ensureStockLogs_().getLastRow() - 1),
     spreadsheetId: ss_().getId()
   };
 }

@@ -6,6 +6,8 @@
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
 <meta name="description" content="다시봄 · 텔로미어 라이프스타일 & 데일리 셀 케어 — 온·오프라인 판매 POS">
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
 <title>다시봄 POS · 텔로미어 라이프스타일</title>
 <style>
 /* =========================================================================
@@ -695,6 +697,76 @@ body.gate-locked .cart-bar{ display:none !important; }
   .print-doc footer{ margin-top:16px; font-size:10px; color:#666; text-align:center; line-height:1.6; }
 }
 
+/* ---------- 재고 · 본점 모니터링 ---------- */
+.stock-tag{
+  position:absolute; left:8px; top:8px; z-index:2;
+  font-size:10px; font-weight:800; letter-spacing:-.01em;
+  padding:2px 7px; border-radius:6px;
+  background:rgba(255,255,255,.94); border:1px solid #f0e2c0; color:#7a5a22;
+  box-shadow:0 1px 2px rgba(42,27,48,.06);
+}
+.stock-tag.out{ border-color:#eed3ce; color:var(--danger); }
+.stock-inline{ font-size:11px; color:var(--muted); }
+.stock-inline b{ color:var(--ink-2); }
+.badge.low{ background:#fdf7e8; color:#7a5a22; border:1px solid #f0e2c0; }
+.badge.out{ background:var(--danger-50); color:var(--danger); border:1px solid #eed3ce; }
+.badge.ok{ background:#eef7f1; color:#22643c; border:1px solid #cfe8d8; }
+
+.stock-filters{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:0 0 10px; }
+.stock-filters select,.stock-filters input{
+  height:34px; border:1px solid var(--line-2); border-radius:8px;
+  font-size:12.5px; padding:0 9px; background:var(--surface); color:var(--ink);
+  max-width:100%;
+}
+.stock-filters input[type="search"]{ min-width:140px; flex:1 1 140px; }
+.stock-row-actions{ display:flex; gap:4px; flex-wrap:nowrap; }
+.stock-row-actions .btn{ padding:0 8px; }
+.hist-row{ cursor:default; }
+.hist-delta.pos{ color:#22643c; font-weight:800; }
+.hist-delta.neg{ color:var(--danger); font-weight:800; }
+
+.mon-cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(184px,1fr)); gap:10px; }
+.mon-card{
+  border:1px solid var(--line); border-radius:14px; padding:13px 14px;
+  background:var(--surface); display:flex; flex-direction:column; gap:2px; min-width:0;
+}
+.mon-card.hero{
+  background:radial-gradient(130% 150% at 90% 0%, #6b4477 0%, #5d3969 60%, #3f2450 100%);
+  border-color:transparent; color:#fdf8ff; box-shadow:0 10px 26px rgba(93,57,105,.22);
+}
+.mon-card .mc-top{ display:flex; align-items:center; gap:7px; }
+.mon-card .mc-name{ font-size:12.5px; font-weight:800; letter-spacing:-.02em; }
+.mon-card .mc-rev{ font-size:20px; font-weight:800; letter-spacing:-.045em; font-variant-numeric:tabular-nums; margin-top:3px; }
+.mon-card .mc-meta{ font-size:11px; color:var(--muted); display:flex; gap:9px; flex-wrap:wrap; margin-top:2px; }
+.mon-card.hero .mc-meta{ color:rgba(249,244,251,.76); }
+.mon-card .mc-bar{ height:4px; border-radius:99px; background:var(--surface-2); margin-top:8px; overflow:hidden; }
+.mon-card.hero .mc-bar{ background:rgba(253,248,255,.24); }
+.mon-card .mc-bar i{ display:block; height:100%; border-radius:99px; background:var(--brand-2); }
+.mon-card.hero .mc-bar i{ background:#e2c9ee; }
+.mon-feed{ display:flex; flex-direction:column; }
+.feed-item{
+  display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:3px 9px;
+  align-items:center; padding:10px 2px; border-bottom:1px solid #f3ecf5;
+  cursor:pointer; text-align:left; background:none; border-left:0; border-right:0; border-top:0; width:100%;
+}
+.feed-item:hover{ background:#fcf9fd; }
+.feed-item .fi-time{ font-size:10.5px; color:var(--muted); font-weight:700; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.feed-item .fi-main{ min-width:0; }
+.feed-item .fi-no{ font-size:11px; font-weight:800; color:var(--brand-2); letter-spacing:-.01em; }
+.feed-item .fi-items{ font-size:11.5px; color:var(--ink-2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.feed-item .fi-right{ text-align:right; white-space:nowrap; }
+.feed-item .fi-amt{ font-size:13px; font-weight:800; letter-spacing:-.03em; font-variant-numeric:tabular-nums; }
+.feed-item .fi-pay{ font-size:10px; color:var(--muted); }
+.feed-item .fi-badges{ grid-column:1/-1; display:flex; gap:5px; align-items:center; flex-wrap:wrap; }
+.feed-empty{ padding:26px 8px; text-align:center; color:var(--muted); font-size:12.5px; }
+.mon-status{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:11.5px; color:var(--muted); }
+.mon-status .dot{ flex:0 0 8px; }
+@media (max-width: 520px){
+  .mon-cards{ grid-template-columns:1fr 1fr; }
+  .mon-card .mc-rev{ font-size:17px; }
+  .stock-row-actions{ flex-wrap:wrap; }
+}
+
 /* ---------- 반응형 ---------- */
 @media (max-width: 960px){
   .cust-layout{ grid-template-columns:minmax(0,1fr); }
@@ -944,7 +1016,7 @@ body.gate-locked .cart-bar{ display:none !important; }
   'use strict';
 
   /* ============ 1) 상수 ============ */
-  var APP_VERSION = '1.1.0';
+  var APP_VERSION = '1.2.0';
   var LS_PUB = 'gcoop-pos.v1.pub';   // 고객에게 보이는 데이터만 (매입가·마진·PIN 없음)
   var LS_SEC = 'gcoop-pos.v1.sec';   // 판매자 전용 데이터 (PIN 해시·매입가·주문원가·판매원 비밀번호)
   var LS_SESSION = 'gcoop-pos.v1.sellerSession';  // 같은 탭(sessionStorage) 안에서만 유지되는 판매원 잠금 해제 표시
@@ -964,8 +1036,11 @@ body.gate-locked .cart-bar{ display:none !important; }
     { v: 'received', label: '접수', tone: 'y' },
     { v: 'paid', label: '결제완료', tone: 'b' },
     { v: 'done', label: '배송/수령완료', tone: 'g' },
+    { v: 'refunded', label: '환불', tone: 'r' },
     { v: 'canceled', label: '취소', tone: 'r' }
   ];
+  /* 재고를 되돌리는 상태(취소·환불) — 정산에서도 뺀다. */
+  function isClosedStatus(v) { return v === 'canceled' || v === 'refunded'; }
 
   /* ============ 1-1) 숫자·문자 유틸 ============ */
   function num(v) {
@@ -1198,6 +1273,17 @@ body.gate-locked .cart-bar{ display:none !important; }
       orderQuery: '',
       detailId: null,
       detailQty: 1,
+      monPeriod: 'today',
+      monBranch: 'all',
+      monBusy: false,
+      monMsg: '',
+      stockBranch: '',
+      stockCat: 'all',
+      stockState: 'all',
+      stockQuery: '',
+      stockHistBranch: 'all',
+      stockHistType: 'all',
+      stockForm: null,
       editingId: null,
       syncBusy: false,
       syncMsg: '',
@@ -1229,7 +1315,13 @@ body.gate-locked .cart-bar{ display:none !important; }
         pay: { bank: '', account: '', holder: '', link: '' }
       },
       products: [],
-      orders: []
+      orders: [],
+      /* 지점별·품목별 재고 — { [branchId]: { [productId]: { qty, safetyQty, updatedAt } } }
+         재고 구조가 없는 예전 저장소도 loadAll() 에서 현재 지점 재고를 자동으로 만들어 준다. */
+      inventory: {},
+      /* 입출고 이력 — 시간순(오래된 순)으로 쌓고, 조회는 최신순으로 한다. */
+      stockLogs: [],
+      stockVersion: STOCK_VERSION
     };
   }
   function defaultSec() {
@@ -1290,8 +1382,35 @@ body.gate-locked .cart-bar{ display:none !important; }
      기록하고 확인하는 값이다. (1: 25종 건강식품·의료기기 / 2: 텔로메라 스킨케어 7종 추가 /
      3: 효능별 10종 카테고리 → 지쿱 라인별 6종 카테고리 + 라인 순서 정돈 /
      4: 세대 3 이하 저장소에 남아 있던 옛 카테고리 이름(오메가3·유산균·비타민·미네랄·홍삼·인삼 등)을
-        지우고, 기본 품목의 카테고리를 라인 6종으로 일괄 갱신 + 진열 순서 재정돈) */
-  var SEED_VERSION = 5;
+        지우고, 기본 품목의 카테고리를 라인 6종으로 일괄 갱신 + 진열 순서 재정돈
+     5: 주문번호 DB-YYMMDD-001 순번 정리 / 6: 지점별 재고(inventory)·입출고 이력(stockLogs) 구조 추가) */
+  var SEED_VERSION = 6;
+
+  /* ---- 재고 입출고 ---- */
+  var STOCK_VERSION = 1;
+  var STOCK_SAFETY_DEFAULT = 5;   // 안전재고 기본값(처음 재고 기록을 만들 때)
+  var STOCK_LOG_MAX = 4000;       // 이 기기에 보관하는 이력 최대 개수(넘으면 오래된 것부터 정리)
+  var STOCK_TYPES = [
+    { v: 'in', label: '입고', sign: 1, short: '입고' },
+    { v: 'out', label: '출고', sign: -1, short: '출고' },
+    { v: 'return', label: '반품', sign: 1, short: '반품' },
+    { v: 'loss', label: '손실', sign: -1, short: '손실' },
+    { v: 'adjust', label: '조정', sign: 1, short: '조정' }
+  ];
+
+  function stockTypeMeta(v) {
+    for (var i = 0; i < STOCK_TYPES.length; i++) if (STOCK_TYPES[i].v === v) return STOCK_TYPES[i];
+    return { v: v, label: v || '', sign: 1, short: v || '' };
+  }
+  /* 이력에 남는 구분 이름 — 주문에서 자동으로 생긴 기록은 '(판매)'·'(주문취소)'를 덧붙인다. */
+  function stockLogLabel(log) {
+    if (!log) return '';
+    if (log.orderId || log.orderNo) {
+      if (log.type === 'out') return '출고(판매)';
+      if (log.type === 'in') return '입고(주문취소)';
+    }
+    return stockTypeMeta(log.type).label;
+  }
 
   /* 고객 화면 카테고리 — 지쿱 제품 라인 6종. 칩과 '전체' 보기 섹션의 순서가 이 순서를 따른다. */
   var CAT_ORDER = ['텔로메라', '제너럴 밸런스', '디엘릭서', '씨케이·활력', '지쿱카페', '의료기기'];
@@ -1857,7 +1976,7 @@ body.gate-locked .cart-bar{ display:none !important; }
     for (var i = 0; i < list.length; i++) if (list[i] && list[i].id === id) return true;
     return false;
   }
-  var mergeInfo = { added: 0, filled: 0, costs: 0, recat: 0, reordered: 0 };
+  var mergeInfo = { added: 0, filled: 0, costs: 0, recat: 0, reordered: 0, stocked: 0 };
 
   /* 기본 품목을 SEED_ORDER(라인 묶음) 순서로 다시 세운다.
      사용자가 추가한 품목은 뒤쪽에 그대로 둔다. sort 값도 10, 20, 30… 으로 다시 매겨
@@ -2052,8 +2171,20 @@ body.gate-locked .cart-bar{ display:none !important; }
     /* ---- 기본 품목 병합 ----
        이전 버전(9종)으로 저장된 localStorage를 그대로 두면 새 품목이 보이지 않는다.
        사용자가 고친 값·주문은 건드리지 않고, 빠진 기본 품목만 채워 넣는다. */
+    var prevSeedVer = num(pub.settings && pub.settings.seedVersion) || 0;
     var merge = mergeSeedProducts(pub, sec);
     mergeInfo = merge;
+
+    /* ---- 재고 구조 마이그레이션 (세대 6) ----
+       주문·지점·설정·품목/매입가는 그대로 두고, 지점별 재고(inventory)·입출고 이력(stockLogs)
+       자리만 만들고 기존 품목 stock 값을 현재 재고의 시작값으로 넣는다. */
+    if (prevSeedVer < SEED_VERSION || !pub.inventory || !Array.isArray(pub.stockLogs)) {
+      merge.stocked = seedStockStructures(pub);
+    }
+    /* 예전 버전에서 '취소 시 재고 복원됨'으로 표시해 둔 주문은 다시 복원하지 않는다. */
+    (pub.orders || []).forEach(function (o) {
+      if (o && o.stockReturned && !o.stockRestored) o.stockRestored = true;
+    });
 
     if (!sec.pin.salt || !sec.pin.hash) {
       var salt = randomSalt();
@@ -2074,7 +2205,7 @@ body.gate-locked .cart-bar{ display:none !important; }
     /* 품목·카테고리를 병합했으면 바로 저장한다 — 옛 카테고리 이름이 저장소에 남아
        다음에 열 때 같은 병합을 되풀이하지 않도록, 그리고 새 파일을 한 번 열기만 해도
        정리가 끝난 상태가 되도록. */
-    if (fresh || merge.added || merge.filled || merge.costs || merge.recat || merge.reordered || sellerNorm) saveAll();
+    if (fresh || merge.added || merge.filled || merge.costs || merge.recat || merge.reordered || merge.stocked || sellerNorm) saveAll();
     return fresh;
   }
   function savePub() { return writeJSON(LS_PUB, state.pub); }
@@ -2091,6 +2222,180 @@ body.gate-locked .cart-bar{ display:none !important; }
     return c == null ? 0 : num(c);
   }
   function isCostExample(id) { return !!state.sec.costExample[id]; }
+
+  /* ============ 2-2) 지점별 재고 · 입출고 이력 ============
+     재고는 지점(branch)마다 따로 센다. pub(공개 저장소)에 두어 여러 기기·구글 시트로 같은 값을
+     나누어 쓰고, 매입가 같은 비밀 값은 여기에 넣지 않는다.
+       inventory: { [branchId]: { [productId]: { qty, safetyQty, updatedAt } } }
+       stockLogs: [{ id, at, branchId, branchName, productId, name, type, qty, before, after,
+                     memo, orderId, orderNo, device, manager, syncedAt }] */
+  function branchNameOf(branchId) {
+    var list = (state.pub && state.pub.settings && state.pub.settings.branches) || [];
+    for (var i = 0; i < list.length; i++) if (list[i] && list[i].id === branchId) return list[i].name || '';
+    return '';
+  }
+  function invBag(branchId, create) {
+    var pub = state.pub;
+    if (!pub || !branchId) return null;
+    if (!pub.inventory || typeof pub.inventory !== 'object') pub.inventory = {};
+    var bag = pub.inventory[branchId];
+    if ((!bag || typeof bag !== 'object') && create) {
+      bag = {};
+      pub.inventory[branchId] = bag;
+    }
+    return (bag && typeof bag === 'object') ? bag : null;
+  }
+  function invRecord(branchId, productId) {
+    var bag = invBag(branchId, false);
+    if (!bag) return null;
+    var rec = bag[productId];
+    return (rec && typeof rec === 'object') ? rec : null;
+  }
+  function legacyStock(productId) {
+    var p = productById(productId);
+    return p ? Math.max(0, int(p.stock)) : 0;
+  }
+  /* 이 지점에 재고 기록이 없으면 품목의 기존 재고(stock)를 시작값으로 만들어 준다.
+     — 처음 재고를 세지 않은 지점도 판매가 막히지 않고, 첫 변동부터 지점 재고로 남는다. */
+  function ensureInvRecord(branchId, productId, opts) {
+    if (!branchId || !productId) return null;
+    var rec = invRecord(branchId, productId);
+    if (rec) return rec;
+    var bag = invBag(branchId, true);
+    if (!bag) return null;
+    var seedQty = (opts && opts.qty != null) ? int(opts.qty) : legacyStock(productId);
+    bag[productId] = {
+      qty: Math.max(0, seedQty),
+      safetyQty: (opts && opts.safetyQty != null) ? Math.max(0, int(opts.safetyQty)) : STOCK_SAFETY_DEFAULT,
+      updatedAt: Date.now()
+    };
+    return bag[productId];
+  }
+  function branchQty(productId, branchId) {
+    var rec = invRecord(branchId, productId);
+    if (rec) return Math.max(0, int(rec.qty));
+    return legacyStock(productId);
+  }
+  function safetyQtyOf(productId, branchId) {
+    var rec = invRecord(branchId, productId);
+    return rec ? Math.max(0, int(rec.safetyQty)) : 0;
+  }
+  /* { qty, safety, tracked, state:'ok'|'low'|'out' } */
+  function stockStateOf(productId, branchId) {
+    var rec = invRecord(branchId, productId);
+    var qty = rec ? Math.max(0, int(rec.qty)) : legacyStock(productId);
+    var safety = rec ? Math.max(0, int(rec.safetyQty)) : STOCK_SAFETY_DEFAULT;
+    var state = 'ok';
+    if (qty <= 0) state = 'out';
+    else if (rec && safety > 0 && qty < safety) state = 'low';
+    return { qty: qty, safety: safety, tracked: !!rec, state: state };
+  }
+  function stockStateLabel(v) {
+    if (v === 'out') return '품절';
+    if (v === 'low') return '부족';
+    return '정상';
+  }
+  function pushStockLog(log) {
+    if (!Array.isArray(state.pub.stockLogs)) state.pub.stockLogs = [];
+    state.pub.stockLogs.push(log);
+    if (state.pub.stockLogs.length > STOCK_LOG_MAX) {
+      state.pub.stockLogs = state.pub.stockLogs.slice(state.pub.stockLogs.length - STOCK_LOG_MAX);
+    }
+  }
+  /* 재고 변동 1건 적용 + 이력 기록.
+     opt = { branchId, productId, type, qty, safetyQty, memo, orderId, orderNo }
+     · 입고·반품은 더하고 출고·손실은 빼며, 조정(adjust)은 qty 를 '조정 후 재고'로 본다.
+     · 출고가 재고보다 크면 0에서 멈춘다(음수 재고를 만들지 않음).
+     · 품목의 기존 stock 값도 같은 폭으로 맞춰, 예전 화면·시트와 숫자가 어긋나지 않게 한다. */
+  function applyStockChange(opt) {
+    opt = opt || {};
+    var productId = opt.productId;
+    var branchId = opt.branchId || (state.pub && state.pub.settings ? state.pub.settings.currentBranchId : '') || '';
+    var p = productById(productId);
+    if (!p || !branchId) return null;
+    var rec = ensureInvRecord(branchId, productId);
+    if (!rec) return null;
+    var before = Math.max(0, int(rec.qty));
+    var meta = stockTypeMeta(opt.type);
+    var amount = Math.abs(int(opt.qty));
+    var after;
+    if (opt.type === 'adjust') after = Math.max(0, int(opt.qty));
+    else if (meta.sign > 0) after = before + amount;
+    else after = Math.max(0, before - amount);
+    var delta = after - before;
+    if (opt.safetyQty != null && opt.safetyQty !== '') rec.safetyQty = Math.max(0, int(opt.safetyQty));
+    rec.qty = after;
+    rec.updatedAt = Date.now();
+    p.stock = Math.max(0, num(p.stock) + delta);
+    p.updatedAt = Date.now();
+    var log = {
+      id: uid('sl'),
+      at: Date.now(),
+      branchId: branchId,
+      branchName: branchNameOf(branchId),
+      productId: productId,
+      name: p.name || '',
+      type: opt.type || 'adjust',
+      qty: delta,
+      before: before,
+      after: after,
+      memo: String(opt.memo || ''),
+      orderId: opt.orderId || '',
+      orderNo: opt.orderNo || '',
+      device: (state.pub.settings && state.pub.settings.deviceName) || '',
+      manager: (state.pub.settings && state.pub.settings.managerName) || '',
+      syncedAt: 0
+    };
+    pushStockLog(log);
+    return { log: log, before: before, after: after, delta: delta };
+  }
+  /* 주문 재고 반영 — direction 1: 판매 차감(출고), -1: 취소·환불 복원(입고) */
+  function applyOrderStock(order, direction) {
+    if (!order || !Array.isArray(order.items)) return 0;
+    var branchId = order.branchId || (state.pub.settings.currentBranchId || '');
+    var n = 0;
+    order.items.forEach(function (it) {
+      if (!it || !it.productId) return;
+      var qty = Math.max(1, int(it.qty));
+      var r = applyStockChange({
+        branchId: branchId,
+        productId: it.productId,
+        type: direction > 0 ? 'out' : 'in',
+        qty: qty,
+        orderId: order.id,
+        orderNo: order.no,
+        memo: direction > 0 ? '주문 판매 자동 차감' : '주문 취소 자동 복원'
+      });
+      if (r) n++;
+    });
+    return n;
+  }
+  /* 재고 구조가 없는 저장소에 지점×품목 기록을 만들어 준다(기존 stock 값을 시작값으로). */
+  function seedStockStructures(pub) {
+    var made = 0;
+    if (!pub || typeof pub !== 'object') return 0;
+    if (!pub.inventory || typeof pub.inventory !== 'object') { pub.inventory = {}; made++; }
+    if (!Array.isArray(pub.stockLogs)) { pub.stockLogs = []; made++; }
+    pub.stockVersion = STOCK_VERSION;
+    var branches = (pub.settings && Array.isArray(pub.settings.branches)) ? pub.settings.branches : [];
+    var prods = Array.isArray(pub.products) ? pub.products : [];
+    branches.forEach(function (b) {
+      if (!b || !b.id) return;
+      if (!pub.inventory[b.id] || typeof pub.inventory[b.id] !== 'object') {
+        pub.inventory[b.id] = {};
+        made++;
+      }
+      var bag = pub.inventory[b.id];
+      prods.forEach(function (p) {
+        if (!p || !p.id) return;
+        if (!bag[p.id] || typeof bag[p.id] !== 'object') {
+          bag[p.id] = { qty: Math.max(0, int(p.stock)), safetyQty: STOCK_SAFETY_DEFAULT, updatedAt: Date.now() };
+          made++;
+        }
+      });
+    });
+    return made;
+  }
   function visibleProducts() {
     return state.pub.products.filter(function (p) { return p.visible !== false; });
   }
@@ -2672,13 +2977,25 @@ body.gate-locked .cart-bar{ display:none !important; }
     }).sort(function (a, b) { return (num(a.sort) || 0) - (num(b.sort) || 0); });
   }
 
-  function isSoldOut(p) { return !!p.soldout || num(p.stock) <= 0; }
+  function isSoldOut(p) { return !!p.soldout || availableQty(p) <= 0; }
+  /* 지금 이 기기의 지점에서 팔 수 있는 수량 — 지점 재고가 기준이고, 기록이 없으면 품목 stock */
+  function availableQty(p) {
+    if (!p) return 0;
+    var b = currentBranch();
+    return branchQty(p.id, b ? b.id : '');
+  }
+  function currentStockState(p) {
+    var b = currentBranch();
+    return stockStateOf(p && p.id, b ? b.id : '');
+  }
 
   function productCardHTML(p) {
     var out = isSoldOut(p);
+    var st = currentStockState(p);
     return '<article class="card" data-act="detail" data-id="' + esc(p.id) + '" tabindex="0" role="button" aria-label="' + esc(p.name) + ' 상세 보기">' +
       '<div class="card-media">' + imgHTML(p, '') +
       (out ? '<span class="tag-soldout">품절</span>' : '') +
+      (!out && st.state === 'low' ? '<span class="stock-tag">재고 ' + st.qty + '개</span>' : '') +
       '</div>' +
       '<div class="card-body">' +
       '<span class="cat-tag">' + esc(p.category || '기타') + '</span>' +
@@ -2829,7 +3146,7 @@ body.gate-locked .cart-bar{ display:none !important; }
     var q = Math.max(1, int(qty) || 1);
     var cur = 0;
     state.ui.cart.forEach(function (it) { if (it.id === id) cur = it.qty; });
-    var stock = num(p.stock);
+    var stock = availableQty(p);
     var next = cur + q;
     if (stock > 0 && next > stock) {
       next = stock;
@@ -2844,7 +3161,7 @@ body.gate-locked .cart-bar{ display:none !important; }
   }
   function changeQty(id, delta) {
     var p = productById(id);
-    var stock = p ? num(p.stock) : 0;
+    var stock = p ? availableQty(p) : 0;
     state.ui.cart.forEach(function (it) {
       if (it.id !== id) return;
       it.qty = int(it.qty) + int(delta);
@@ -2886,6 +3203,8 @@ body.gate-locked .cart-bar{ display:none !important; }
       '<div class="detail-title"><h2>' + esc(p.name) + '</h2>' +
       '<p class="detail-sum">' + nl2br(p.summary || '') + '</p></div>' +
       '<div class="detail-price"><b>' + groupNum(p.price) + '</b><span>원 · 소비자가</span></div>' +
+      '<p class="stock-inline">현재 지점 재고 <b>' + currentStockState(p).qty + '개</b>' +
+      (out ? ' · 품절' : (currentStockState(p).state === 'low' ? ' · 안전재고(' + currentStockState(p).safety + '개) 미만' : '')) + '</p>' +
       (points.length ? '<div class="dsec"><h3>핵심 포인트</h3><ul>' +
         points.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>' : '') +
       (p.ingredients ? '<div class="dsec"><h3>주요 성분 · 기능성</h3><p>' + nl2br(p.ingredients) + '</p></div>' : '') +
@@ -2972,13 +3291,10 @@ body.gate-locked .cart-bar{ display:none !important; }
     });
     state.sec.orderCosts[order.id] = { total: costTotal, items: costItems, at: ts };
 
-    // 재고 차감
-    order.items.forEach(function (it) {
-      var p = productById(it.productId);
-      if (!p) return;
-      var st = num(p.stock);
-      if (st > 0) p.stock = Math.max(0, st - it.qty);
-    });
+    // 재고 차감 — 주문한 지점(branch)의 재고에서 빼고 출고(판매) 이력을 주문번호와 함께 남긴다.
+    // 재고 기록이 없는 지점은 품목 stock 을 시작값으로 자동 생성되므로 판매가 막히지 않는다.
+    order.stockApplied = applyOrderStock(order, 1) > 0;
+    order.stockRestored = false;
 
     state.pub.orders.push(order);
     saveAll();
@@ -3474,7 +3790,7 @@ body.gate-locked .cart-bar{ display:none !important; }
     var branchId = opt.branchId || 'all';
 
     var list = (state.pub.orders || []).filter(function (o) {
-      if (o.status === 'canceled') return false;
+      if (isClosedStatus(o.status)) return false;
       if (branchId !== 'all' && o.branchId !== branchId) return false;
       if (o.ts < from || o.ts >= to) return false;
       return true;
@@ -3561,7 +3877,8 @@ body.gate-locked .cart-bar{ display:none !important; }
 
   function adminTabButtons() {
     var tabs = [
-      { v: 'settle', label: '정산' }, { v: 'products', label: '품목' },
+      { v: 'settle', label: '정산' }, { v: 'monitor', label: '모니터링' },
+      { v: 'products', label: '품목' }, { v: 'stock', label: '재고' },
       { v: 'orders', label: '주문' }, { v: 'sync', label: '동기화' }, { v: 'settings', label: '설정' }
     ];
     return tabs.map(function (t) {
@@ -3599,7 +3916,9 @@ body.gate-locked .cart-bar{ display:none !important; }
       b.classList.toggle('active', b.getAttribute('data-tab') === state.ui.tab);
     });
     if (state.ui.tab === 'settle') body.innerHTML = settleHTML();
+    else if (state.ui.tab === 'monitor') { body.innerHTML = monitorHTML(); monOnEnter(); }
     else if (state.ui.tab === 'products') body.innerHTML = productsHTML();
+    else if (state.ui.tab === 'stock') body.innerHTML = stockHTML();
     else if (state.ui.tab === 'orders') body.innerHTML = ordersHTML();
     else if (state.ui.tab === 'sync') body.innerHTML = syncHTML();
     else body.innerHTML = settingsHTML();
@@ -3669,7 +3988,7 @@ body.gate-locked .cart-bar{ display:none !important; }
       '<div class="kpi"><div class="k">총매입가</div><div class="v">' + fmtWon(s.cost) + '</div><div class="s">판매 시점 원가 기준</div></div>' +
       '<div class="kpi pos"><div class="k">순마진</div><div class="v">' + fmtWon(s.margin) + '</div>' +
       '<div class="s">평균 마진율 ' + s.rate.toFixed(1) + '%</div></div>' +
-      '<div class="kpi"><div class="k">주문 건수</div><div class="v">' + s.count + '</div><div class="s">취소 주문 제외</div></div>' +
+      '<div class="kpi"><div class="k">주문 건수</div><div class="v">' + s.count + '</div><div class="s">취소·환불 제외</div></div>' +
       '</div>' +
       (s.unknownCost ? '<div class="notice warn" style="margin-top:10px"><span>⚠</span><div>매입가가 입력되지 않은 품목이 있습니다. 해당 품목의 원가는 0원으로 계산되어 마진이 크게 보일 수 있습니다.</div></div>' : '') +
       '</div>' +
@@ -3696,6 +4015,198 @@ body.gate-locked .cart-bar{ display:none !important; }
       '</div>';
   }
 
+  /* ---- 본점 판매 모니터링 (지점 통합 현황) ---- */
+  var MON_PERIODS = [
+    { v: 'today', label: '오늘' }, { v: 'week', label: '이번주' },
+    { v: 'month', label: '이번달' }, { v: 'all', label: '전체' }
+  ];
+  function monitorRange(period) {
+    var now = Date.now();
+    var t0 = dayStart(now);
+    if (period === 'week') {
+      var d = new Date(now);
+      var dow = (d.getDay() + 6) % 7;   // 월요일 = 0
+      return { from: addDays(t0, -dow), to: addDays(t0, 1) };
+    }
+    if (period === 'month') {
+      var m = new Date(now);
+      m.setDate(1);
+      m.setHours(0, 0, 0, 0);
+      return { from: m.getTime(), to: addDays(t0, 1) };
+    }
+    if (period === 'all') return { from: 0, to: Infinity };
+    return { from: t0, to: addDays(t0, 1) };
+  }
+  /* 지점별 매출·건수·예상 마진 + 기간 합계 */
+  function monitorStats() {
+    var range = monitorRange(state.ui.monPeriod || 'today');
+    var total = computeSettle({ from: range.from, to: range.to, branchId: 'all' });
+    var branches = branchList().map(function (b) {
+      var s = computeSettle({ from: range.from, to: range.to, branchId: b.id });
+      var lowN = 0, outN = 0;
+      state.pub.products.forEach(function (p) {
+        if (p.visible === false) return;
+        var st = stockStateOf(p.id, b.id);
+        if (st.state === 'out') outN++;
+        else if (st.state === 'low') lowN++;
+      });
+      return { id: b.id, name: b.name, type: b.type, data: s, low: lowN, out: outN };
+    });
+    return { range: range, total: total, branches: branches };
+  }
+  function monitorOrders() {
+    var range = monitorRange(state.ui.monPeriod || 'today');
+    var br = state.ui.monBranch || 'all';
+    return (state.pub.orders || []).filter(function (o) {
+      if (!o) return false;
+      if (br !== 'all' && o.branchId !== br) return false;
+      if (num(o.ts) < range.from || num(o.ts) >= range.to) return false;
+      return true;
+    }).sort(function (a, b) { return num(b.ts) - num(a.ts); });
+  }
+  function orderItemsSummary(o) {
+    var items = (o && o.items) || [];
+    if (!items.length) return '-';
+    if (items.length === 1) return items[0].name + ' ×' + items[0].qty;
+    return items[0].name + ' ×' + items[0].qty + ' 외 ' + (items.length - 1) + '건';
+  }
+  function monitorSyncLine() {
+    var s = state.pub.settings;
+    var on = !!syncUrl();
+    return '<div class="mon-status"><span class="dot ' + (on ? 'ok' : '') + '"></span>' +
+      '<span>' + (on
+        ? '구글 시트 연결됨 · 다른 지점 기기의 주문·재고를 함께 불러옵니다'
+        : '현재 기기 데이터 기준 · 구글 시트 연결 시 타 지점 실시간 통합') + '</span>' +
+      '<span class="hint">마지막 갱신 ' + (s.lastSyncAt ? fmtDateTime(s.lastSyncAt) : '없음') +
+      (state.ui.monMsg ? ' · ' + esc(state.ui.monMsg) : '') + '</span></div>';
+  }
+
+  function monitorHTML() {
+    var ui = state.ui;
+    var stat = monitorStats();
+    var total = stat.total;
+    var maxRev = 0;
+    stat.branches.forEach(function (b) { maxRev = Math.max(maxRev, b.data.revenue); });
+
+    var periodChips = MON_PERIODS.map(function (p) {
+      return '<button type="button" data-act="mon:period" data-period="' + p.v + '"' +
+        ((ui.monPeriod || 'today') === p.v ? ' class="active"' : '') + '>' + p.label + '</button>';
+    }).join('');
+
+    var cards = '<div class="mon-card hero">' +
+      '<div class="mc-top"><span class="mc-name">전체 지점 합계</span></div>' +
+      '<div class="mc-rev">' + fmtWon(total.revenue) + '</div>' +
+      '<div class="mc-meta"><span>주문 ' + total.count + '건</span><span>판매 ' + total.qty + '개</span>' +
+      '<span>예상 마진 ' + fmtWon(total.margin) + '</span></div></div>';
+    cards += stat.branches.map(function (b) {
+      var share = maxRev > 0 ? Math.round((b.data.revenue / maxRev) * 100) : 0;
+      return '<div class="mon-card">' +
+        '<div class="mc-top"><span class="mc-name">' + esc(b.name) + '</span>' +
+        (ui.monBranch === b.id ? '<span class="badge b">보는 중</span>' : '') +
+        (b.out ? '<span class="badge out">품절 ' + b.out + '</span>' : '') +
+        (b.low ? '<span class="badge low">부족 ' + b.low + '</span>' : '') + '</div>' +
+        '<div class="mc-rev">' + fmtWon(b.data.revenue) + '</div>' +
+        '<div class="mc-meta"><span>' + b.data.count + '건</span><span>' + b.data.qty + '개</span>' +
+        '<span>마진 ' + fmtWon(b.data.margin) + '</span></div>' +
+        '<div class="mc-bar"><i style="width:' + share + '%"></i></div></div>';
+    }).join('');
+
+    var branchChips = '<button type="button" class="chip' + ((ui.monBranch || 'all') === 'all' ? ' active' : '') +
+      '" data-act="mon:branch" data-branch="all">전체</button>' +
+      branchList().map(function (b) {
+        return '<button type="button" class="chip' + (ui.monBranch === b.id ? ' active' : '') +
+          '" data-act="mon:branch" data-branch="' + esc(b.id) + '">' + esc(b.name) + '</button>';
+      }).join('');
+
+    var feedList = monitorOrders();
+    var shown = feedList.slice(0, 30);
+    var feedRows = shown.map(function (o) {
+      var sm = statusMeta(o.status);
+      return '<button type="button" class="feed-item" data-act="mon:view" data-id="' + esc(o.id) + '">' +
+        '<span class="fi-time">' + fmtTime(o.ts) + '</span>' +
+        '<span class="fi-main"><span class="fi-no">' + esc(o.no || '') + '</span>' +
+        '<div class="fi-items">' + esc(orderItemsSummary(o)) + '</div></span>' +
+        '<span class="fi-right"><div class="fi-amt">' + fmtWon(o.total) + '</div>' +
+        '<div class="fi-pay">' + esc(paymentLabel(o.payment)) + '</div></span>' +
+        '<span class="fi-badges"><span class="badge n">' + esc(o.branchName || '-') + '</span>' +
+        '<span class="badge ' + sm.tone + '">' + esc(sm.label) + '</span>' +
+        '<span class="badge n">' + esc(channelLabel(o.channel)) + '</span></span></button>';
+    }).join('');
+
+    return '<div style="display:flex;flex-direction:column;gap:12px">' +
+      '<div class="panel"><div class="panel-head"><h2>본점 판매 모니터링</h2>' +
+      '<span class="hint">지점별 매출·건수·예상 마진과 최근 판매 흐름</span><span class="spacer"></span>' +
+      '<button type="button" class="btn sm' + (ui.monBusy ? '' : ' primary') + '" data-act="mon:refresh"' +
+      (ui.monBusy ? ' disabled' : '') + '>' + (ui.monBusy ? '갱신 중…' : '↻ 새로고침') + '</button></div>' +
+      monitorSyncLine() +
+      '<div class="seg-chips" style="margin:10px 0 10px">' + periodChips + '</div>' +
+      '<div class="mon-cards">' + cards + '</div>' +
+      (total.unknownCost ? '<div class="notice warn" style="margin-top:10px"><span>⚠</span><div>매입가가 없는 품목이 있어 예상 마진이 실제보다 크게 보일 수 있습니다.</div></div>' : '') +
+      '</div>' +
+
+      '<div class="panel"><div class="panel-head"><h2>지점별 최근 판매내역</h2>' +
+      '<span class="hint">' + feedList.length + '건 · 최신 30건 표시</span><span class="spacer"></span>' +
+      '<button type="button" class="btn sm" data-act="export:orders">CSV</button></div>' +
+      '<div class="chips" style="margin-bottom:6px">' + branchChips + '</div>' +
+      '<div class="mon-feed">' + (feedRows || '<div class="feed-empty">이 기간에 판매 내역이 없습니다.</div>') + '</div>' +
+      '<p class="hint" style="margin-top:8px">항목을 누르면 주문 상세와 주문 확인서를 바로 열 수 있습니다. 다른 지점 기기에서 올린 주문은 구글 시트를 새로고침하면 이 목록에 함께 나타납니다.</p>' +
+      '</div></div>';
+  }
+
+  /* 모니터링 화면에 들어올 때·새로고침을 누를 때 시트에서 다른 지점 내역까지 다시 불러온다.
+     20초 안에 다시 들어온 경우에는 중복 요청을 하지 않는다. */
+  var monLastEnter = 0;
+  function monOnEnter() {
+    if (!syncUrl()) return;
+    var now = Date.now();
+    if (now - monLastEnter < 20000) return;
+    monLastEnter = now;
+    refreshMonitor(true);
+  }
+  function pushPendingSilent() {
+    var list = pendingOrders();
+    if (!list.length || !syncUrl()) return new Promise(function (res) { res(null); });
+    return apiPost({ action: 'orders.push', orders: list.map(orderPayload) }).then(function (d) {
+      var now = Date.now();
+      list.forEach(function (o) { o.syncedAt = now; });
+      saveAll();
+      return d;
+    }).catch(function () { return null; });
+  }
+  function refreshMonitor(silent) {
+    if (!syncUrl()) {
+      state.ui.monBusy = false;
+      state.ui.monMsg = '';
+      if (!silent) {
+        renderAdminTab();
+        toast('지금은 이 기기 데이터로 보여 줍니다. 동기화 탭에서 구글 시트를 연결하면 다른 지점 내역까지 함께 나옵니다.');
+      }
+      return;
+    }
+    state.ui.monBusy = true;
+    state.ui.monMsg = '시트에서 불러오는 중…';
+    if (state.ui.tab === 'monitor') renderAdminTab();
+    pushPendingSilent()
+      .then(function () { return syncStockPush(true); })
+      .then(function () { return apiGet({ action: 'all' }); })
+      .then(function (d) {
+        (d.orders || []).forEach(mergeRemoteOrder);
+        mergeRemoteStock(d);
+        state.pub.settings.lastSyncAt = Date.now();
+        state.ui.monBusy = false;
+        state.ui.monMsg = '방금 갱신';
+        saveAll();
+        if (state.ui.tab === 'monitor') renderAdminTab();
+        if (!silent) toast('모니터링을 새로고침했습니다.');
+      })
+      .catch(function (e) {
+        state.ui.monBusy = false;
+        state.ui.monMsg = '갱신 실패: ' + ((e && e.message) ? e.message : String(e));
+        if (state.ui.tab === 'monitor') renderAdminTab();
+        if (!silent) toast('새로고침 실패 — ' + state.ui.monMsg);
+      });
+  }
+
   /* ---- 품목 관리 ---- */
   function productsHTML() {
     var q = (state.ui.prodQuery || '').toLowerCase();
@@ -3716,7 +4227,7 @@ body.gate-locked .cart-bar{ display:none !important; }
         '<td class="num">' + fmtWon(costOf(p.id)) + (ex ? ' <span class="badge ex">예시</span>' : '') + '</td>' +
         '<td class="num ' + (m.margin >= 0 ? 'margin-pos' : 'margin-neg') + '">' + fmtWon(m.margin) + '</td>' +
         '<td class="num">' + m.rate.toFixed(1) + '%</td>' +
-        '<td class="num">' + int(p.stock) + '</td>' +
+        '<td class="num">' + branchQty(p.id, currentBranch().id) + '</td>' +
         '<td><label class="switch"><input type="checkbox" data-act="ptoggle" data-id="' + esc(p.id) + '" data-field="visible"' + (p.visible !== false ? ' checked' : '') + '><span>노출</span></label></td>' +
         '<td><label class="switch"><input type="checkbox" data-act="ptoggle" data-id="' + esc(p.id) + '" data-field="soldout"' + (p.soldout ? ' checked' : '') + '><span>' + (out ? '품절' : '판매') + '</span></label></td>' +
         '<td style="white-space:nowrap"><button type="button" class="btn xs" data-act="pedit" data-id="' + esc(p.id) + '">수정</button> ' +
@@ -3730,7 +4241,7 @@ body.gate-locked .cart-bar{ display:none !important; }
       '<button type="button" class="btn sm primary" data-act="pnew">+ 상품 추가</button></div>' +
       '<div class="notice warn" style="margin-bottom:10px"><span>⚠</span><div><b>매입가(회원가)</b>는 지쿱 공식몰이 로그인 후에만 보여 주기 때문에, 텔로메라 정 199,000원(확인값) 외에는 소비자가의 70%로 임시 입력한 <b>[예시]</b>입니다. 각 품목 <b>수정</b>에서 <b>매입가 (회원가)</b> 칸에 실제 회원가를 바로 넣으면 마진·정산에 반영됩니다. <b>소비자가</b>는 ' + esc(state.pub.settings.priceNote || '지쿱 공식몰 확인값') + '</div></div>' +
       '<div class="table-wrap"><table class="tbl"><thead><tr><th>이미지</th><th>상품</th><th class="num">소비자가</th>' +
-      '<th class="num">매입가(회원가)</th><th class="num">마진</th><th class="num">마진율</th><th class="num">재고</th>' +
+      '<th class="num">매입가(회원가)</th><th class="num">마진</th><th class="num">마진율</th><th class="num">재고(지점)</th>' +
       '<th>노출</th><th>판매</th><th>관리</th></tr></thead><tbody>' +
       (rows || '<tr><td colspan="10" class="tbl-empty">등록된 품목이 없습니다.</td></tr>') +
       '</tbody></table></div></div>';
@@ -3825,6 +4336,326 @@ body.gate-locked .cart-bar{ display:none !important; }
     state.ui.editingId = null;
     closeModal();
     toast('저장했습니다.');
+    renderAdminTab();
+  }
+
+  /* ---- 재고 관리 (지점별 입출고) ---- */
+  function stockBranchId() {
+    var id = state.ui.stockBranch || '';
+    if (id && branchById(id)) return id;
+    return currentBranch().id;
+  }
+  function stockBranchSelect(id, selected) {
+    return '<select id="' + id + '">' + branchList().map(function (b) {
+      return '<option value="' + esc(b.id) + '"' + (selected === b.id ? ' selected' : '') + '>' +
+        esc((state.pub.settings.shopName || '다시봄') + ' ' + b.name) + '</option>';
+    }).join('') + '</select>';
+  }
+  function stockTypeSelect(id, selected) {
+    return '<select id="' + id + '">' + STOCK_TYPES.map(function (t) {
+      return '<option value="' + t.v + '"' + (selected === t.v ? ' selected' : '') + '>' + t.label + '</option>';
+    }).join('') + '</select>';
+  }
+  function lastStockLog(branchId, productId) {
+    var logs = state.pub.stockLogs || [];
+    for (var i = logs.length - 1; i >= 0; i--) {
+      var l = logs[i];
+      if (l && l.branchId === branchId && l.productId === productId) return l;
+    }
+    return null;
+  }
+  /* 재고 탭의 품목 목록 — 지점·라인·검색으로 좁힌 뒤 상태 필터를 적용한다 */
+  function stockRows(opts) {
+    opts = opts || {};
+    var branchId = opts.branchId || stockBranchId();
+    var cat = (opts.cat != null ? opts.cat : (state.ui.stockCat || 'all'));
+    var q = String(opts.query != null ? opts.query : (state.ui.stockQuery || '')).trim().toLowerCase();
+    var stFilter = opts.state != null ? opts.state : (state.ui.stockState || 'all');
+    var out = [];
+    state.pub.products.slice()
+      .sort(function (a, b) { return num(a.sort) - num(b.sort); })
+      .forEach(function (p) {
+        if (!p) return;
+        if (cat !== 'all' && (p.category || '기타') !== cat) return;
+        if (q) {
+          var hay = [p.name, p.category, p.summary].join(' ').toLowerCase();
+          if (hay.indexOf(q) < 0) return;
+        }
+        var st = stockStateOf(p.id, branchId);
+        out.push({
+          product: p, qty: st.qty, safety: st.safety, tracked: st.tracked,
+          state: st.state, log: lastStockLog(branchId, p.id)
+        });
+      });
+    if (stFilter !== 'all') out = out.filter(function (r) { return r.state === stFilter; });
+    return out;
+  }
+  function stockCounts(branchId) {
+    var c = { total: 0, ok: 0, low: 0, out: 0 };
+    state.pub.products.forEach(function (p) {
+      if (p.visible === false) return;
+      var st = stockStateOf(p.id, branchId);
+      c.total++;
+      c[st.state] = (c[st.state] || 0) + 1;
+    });
+    return c;
+  }
+  function stockLogsFiltered() {
+    var br = state.ui.stockHistBranch || 'all';
+    var ty = state.ui.stockHistType || 'all';
+    return (state.pub.stockLogs || []).filter(function (l) {
+      if (!l) return false;
+      if (br !== 'all' && l.branchId !== br) return false;
+      if (ty !== 'all' && l.type !== ty) return false;
+      return true;
+    }).sort(function (a, b) { return num(b.at) - num(a.at); });
+  }
+  function stockCSVRows(logs) {
+    var rows = [[
+      '일시', '지점', '품목ID', '품목명', '구분', '변동수량', '변동전재고', '변동후재고',
+      '사유/메모', '주문번호', '기기', '담당자'
+    ]];
+    (logs || []).forEach(function (l) {
+      rows.push([
+        fmtDateTime(l.at), l.branchName || '', l.productId || '', l.name || '', stockLogLabel(l),
+        l.qty, l.before, l.after, l.memo || '', l.orderNo || '', l.device || '', l.manager || ''
+      ]);
+    });
+    return rows;
+  }
+  function exportStockCSV() {
+    var logs = stockLogsFiltered();
+    if (!logs.length) { toast('내보낼 입출고 이력이 없습니다.'); return; }
+    var csv = '\uFEFF' + toCSV(stockCSVRows(logs));
+    downloadFile('다시봄_재고입출고_' + todayInput() + '.csv', csv, 'text/csv;charset=utf-8');
+    toast(logs.length + '건을 CSV로 내보냈습니다.');
+  }
+
+  function stockHTML() {
+    var ui = state.ui;
+    var branchId = stockBranchId();
+    var branchName = branchNameOf(branchId) || '지점';
+    var counts = stockCounts(branchId);
+    var rows = stockRows({ branchId: branchId });
+
+    var catOpts = '<option value="all">전체 라인</option>' + categories().map(function (c) {
+      return '<option value="' + esc(c) + '"' + (ui.stockCat === c ? ' selected' : '') + '>' + esc(c) + '</option>';
+    }).join('');
+    var stateOpts = [
+      { v: 'all', label: '전체 상태' }, { v: 'ok', label: '정상' },
+      { v: 'low', label: '부족' }, { v: 'out', label: '품절' }
+    ].map(function (o) {
+      return '<option value="' + o.v + '"' + ((ui.stockState || 'all') === o.v ? ' selected' : '') + '>' + o.label + '</option>';
+    }).join('');
+
+    var body = rows.map(function (r) {
+      var p = r.product;
+      var cls = r.state === 'out' ? 'out' : (r.state === 'low' ? 'low' : 'ok');
+      var lg = r.log;
+      var lastTxt = lg
+        ? '<div class="sub">' + (lg.qty > 0 ? '+' : '') + lg.qty + ' · ' + fmtDateTime(lg.at) + '</div>'
+        : '<div class="sub">—</div>';
+      return '<tr>' +
+        '<td><div class="nm">' + esc(p.name) + '</div><div class="sub">' + esc(p.category || '기타') +
+        (p.visible === false ? ' · 비노출' : '') + '</div></td>' +
+        '<td class="num"><b>' + r.qty + '</b></td>' +
+        '<td class="num">' + r.safety + '</td>' +
+        '<td><span class="badge ' + cls + '">' + esc(stockStateLabel(r.state)) + '</span></td>' +
+        '<td>' + lastTxt + '</td>' +
+        '<td><div class="stock-row-actions">' +
+        '<button type="button" class="btn xs" data-act="stock:new" data-type="in" data-id="' + esc(p.id) + '">입고</button>' +
+        '<button type="button" class="btn xs" data-act="stock:new" data-type="out" data-id="' + esc(p.id) + '">출고</button>' +
+        '<button type="button" class="btn xs" data-act="stock:new" data-type="adjust" data-id="' + esc(p.id) + '">조정</button>' +
+        '<button type="button" class="btn xs" data-act="stock:safety" data-id="' + esc(p.id) + '">안전</button>' +
+        '</div></td></tr>';
+    }).join('');
+
+    var logs = stockLogsFiltered().slice(0, 200);
+    var logRows = logs.map(function (l) {
+      return '<tr class="hist-row">' +
+        '<td><div class="sub">' + fmtDateTime(l.at) + '</div></td>' +
+        '<td>' + esc(l.branchName || branchNameOf(l.branchId) || '-') + '</td>' +
+        '<td><div class="nm">' + esc(l.name || (productById(l.productId) || {}).name || '-') + '</div>' +
+        (l.orderNo ? '<div class="sub">' + esc(l.orderNo) + '</div>' : '') + '</td>' +
+        '<td><span class="badge ' + (l.type === 'out' || l.type === 'loss' ? 'out' : 'ok') + '">' +
+        esc(stockLogLabel(l)) + '</span></td>' +
+        '<td class="num"><span class="hist-delta ' + (l.qty >= 0 ? 'pos' : 'neg') + '">' +
+        (l.qty > 0 ? '+' : '') + int(l.qty) + '</span></td>' +
+        '<td class="num">' + int(l.after) + '</td>' +
+        '<td><div class="sub">' + esc(l.memo || '-') + '</div></td></tr>';
+    }).join('');
+
+    return '<div style="display:flex;flex-direction:column;gap:12px">' +
+      '<div class="panel"><div class="panel-head"><h2>재고 현황</h2>' +
+      '<span class="hint">' + esc(branchName) + ' 기준</span><span class="spacer"></span>' +
+      '<button type="button" class="btn sm primary" data-act="stock:new" data-type="in">+ 입출고 등록</button></div>' +
+      '<div class="kpis" style="margin-bottom:12px">' +
+      '<div class="kpi hero"><div class="k">판매 품목</div><div class="v">' + counts.total + '</div><div class="s">노출 품목 기준</div></div>' +
+      '<div class="kpi"><div class="k">부족 (안전재고 미만)</div><div class="v">' + counts.low + '</div><div class="s">보충 필요</div></div>' +
+      '<div class="kpi"><div class="k">품절</div><div class="v">' + counts.out + '</div><div class="s">재고 0</div></div>' +
+      '<div class="kpi"><div class="k">입출고 이력</div><div class="v">' + (state.pub.stockLogs || []).length + '</div><div class="s">전체 지점</div></div>' +
+      '</div>' +
+      '<div class="stock-filters">' + stockBranchSelect('stockBranchSel', branchId) +
+      '<select id="stockCat">' + catOpts + '</select>' +
+      '<select id="stockState">' + stateOpts + '</select>' +
+      '<input type="search" id="stockQuery" placeholder="품목 검색" value="' + esc(ui.stockQuery || '') + '"></div>' +
+      '<div class="table-wrap"><table class="tbl"><thead><tr><th>품목</th><th class="num">현재고</th>' +
+      '<th class="num">안전재고</th><th>상태</th><th>최근 변동</th><th>빠른 입출고</th></tr></thead><tbody>' +
+      (body || '<tr><td colspan="6" class="tbl-empty">조건에 맞는 품목이 없습니다.</td></tr>') +
+      '</tbody></table></div></div>' +
+
+      '<div class="panel"><div class="panel-head"><h2>입출고 이력</h2>' +
+      '<span class="hint">최신 200건 표시 · CSV는 전체 내보내기</span><span class="spacer"></span>' +
+      '<button type="button" class="btn sm" data-act="export:stock">CSV 내보내기</button></div>' +
+      '<div class="stock-filters">' +
+      '<select id="stockHistBranch"><option value="all">전체 지점</option>' + branchList().map(function (b) {
+        return '<option value="' + esc(b.id) + '"' + ((ui.stockHistBranch || 'all') === b.id ? ' selected' : '') + '>' + esc(b.name) + '</option>';
+      }).join('') + '</select>' +
+      '<select id="stockHistType"><option value="all">전체 구분</option>' + STOCK_TYPES.map(function (t) {
+        return '<option value="' + t.v + '"' + ((ui.stockHistType || 'all') === t.v ? ' selected' : '') + '>' + t.label + '</option>';
+      }).join('') + '</select></div>' +
+      '<div class="table-wrap"><table class="tbl"><thead><tr><th>일시</th><th>지점</th><th>품목</th>' +
+      '<th>구분</th><th class="num">변동</th><th class="num">변동후</th><th>사유/메모</th></tr></thead><tbody>' +
+      (logRows || '<tr><td colspan="7" class="tbl-empty">아직 입출고 이력이 없습니다. 입고를 등록하면 여기에 쌓입니다.</td></tr>') +
+      '</tbody></table></div></div></div>';
+  }
+
+  /* 입출고 등록 모달 — 지점·품목·구분·수량·사유·안전재고 */
+  function openStockForm(opts) {
+    opts = opts || {};
+    var branchId = opts.branchId || stockBranchId();
+    var productId = opts.productId || '';
+    var type = opts.type || 'in';
+    state.ui.stockForm = { branchId: branchId, productId: productId, type: type };
+
+    var prodOpts = '<option value="">품목 선택</option>' + state.pub.products.slice()
+      .sort(function (a, b) { return num(a.sort) - num(b.sort); })
+      .map(function (p) {
+        return '<option value="' + esc(p.id) + '"' + (p.id === productId ? ' selected' : '') + '>' +
+          esc(p.name) + (p.visible === false ? ' (비노출)' : '') + '</option>';
+      }).join('');
+
+    var html = '<div class="modal narrow" role="dialog" aria-modal="true" aria-labelledby="sfTitle">' +
+      '<div class="modal-head"><h2 id="sfTitle">입출고 등록</h2>' +
+      '<button type="button" class="icon-btn" data-act="modal:close" aria-label="닫기">✕</button></div>' +
+      '<div class="modal-body">' +
+      '<div class="field"><label for="sfBranch">지점</label>' + stockBranchSelect('sfBranch', branchId) + '</div>' +
+      '<div class="field" style="margin-top:10px"><label for="sfProduct">품목</label>' +
+      '<select id="sfProduct">' + prodOpts + '</select></div>' +
+      '<div class="field" style="margin-top:10px"><label>구분</label>' +
+      '<div class="seg-chips" id="sfTypes">' + STOCK_TYPES.map(function (t) {
+        return '<button type="button" data-act="sf:type" data-type="' + t.v + '"' +
+          (type === t.v ? ' class="active"' : '') + '>' + t.label + '</button>';
+      }).join('') + '</div></div>' +
+      '<div class="margin-preview" id="sfNow" style="margin-top:10px">현재고 <b>—</b></div>' +
+      '<div class="field" style="margin-top:10px"><label for="sfQty" id="sfQtyLabel">수량</label>' +
+      '<input type="number" id="sfQty" min="0" step="1" inputmode="numeric" value="1"></div>' +
+      '<div class="field" style="margin-top:10px"><label for="sfSafety">안전재고</label>' +
+      '<input type="number" id="sfSafety" min="0" step="1" inputmode="numeric" placeholder="비우면 그대로 둡니다"></div>' +
+      '<div class="field" style="margin-top:10px"><label for="sfMemo">사유 / 메모</label>' +
+      '<input type="text" id="sfMemo" placeholder="예: 거래처 입고, 재고 실사, 파손" maxlength="60"></div>' +
+      '<p class="hint" style="margin-top:10px">입고·반품은 재고를 더하고, 출고·손실은 뺀다. 조정은 해당 수량을 <b>조정 후 재고</b>로 맞춥니다. 주문 판매·취소는 자동으로 기록됩니다.</p>' +
+      '</div>' +
+      '<div class="modal-foot"><button type="button" class="btn" data-act="modal:close">취소</button><span class="grow"></span>' +
+      '<button type="button" class="btn primary" data-act="stock:save">등록</button></div></div>';
+
+    openModal(html, { noFocus: false });
+    var qEl = document.getElementById('sfQty');
+    if (qEl) qEl.value = String((type === 'adjust' && productId) ? branchQty(productId, branchId) : 1);
+    updateStockFormNow();
+  }
+  function stockFormField() { return state.ui.stockForm || {}; }
+  function updateStockFormNow() {
+    var f = stockFormField();
+    var branchId = (document.getElementById('sfBranch') || {}).value || f.branchId || '';
+    var productId = (document.getElementById('sfProduct') || {}).value || f.productId || '';
+    f.branchId = branchId;
+    f.productId = productId;
+    var box = document.getElementById('sfNow');
+    var qty = productId ? branchQty(productId, branchId) : 0;
+    var safety = productId ? safetyQtyOf(productId, branchId) : 0;
+    if (box) {
+      box.innerHTML = productId
+        ? '현재고 <b>' + qty + '개</b> <span class="hint">안전재고 ' + safety + '개</span>'
+        : '품목을 고르면 현재고가 표시됩니다.';
+    }
+    var lbl = document.getElementById('sfQtyLabel');
+    if (lbl) lbl.textContent = f.type === 'adjust' ? '조정 후 재고' : '수량';
+  }
+  function setStockFormType(type) {
+    if (!state.ui.stockForm) state.ui.stockForm = {};
+    state.ui.stockForm.type = type;
+    $$('#sfTypes button').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-type') === type);
+    });
+    updateStockFormNow();
+  }
+  function saveStockForm() {
+    var f = stockFormField();
+    var branchId = (document.getElementById('sfBranch') || {}).value || f.branchId || '';
+    var productId = (document.getElementById('sfProduct') || {}).value || f.productId || '';
+    var type = f.type || 'in';
+    var p = productById(productId);
+    if (!p) { toast('품목을 선택해 주세요.'); return; }
+    if (!branchById(branchId)) { toast('지점을 선택해 주세요.'); return; }
+    var qtyEl = document.getElementById('sfQty');
+    var raw = qtyEl ? String(qtyEl.value) : '';
+    if (raw === '' || isNaN(Number(raw))) { toast('수량을 입력해 주세요.'); return; }
+    var qty = int(raw);
+    if (type !== 'adjust' && qty <= 0) { toast('수량은 1개 이상이어야 합니다.'); return; }
+    if (qty < 0) { toast('수량은 0 이상이어야 합니다.'); return; }
+    var memoEl = document.getElementById('sfMemo');
+    var safetyEl = document.getElementById('sfSafety');
+    var safetyRaw = safetyEl ? String(safetyEl.value) : '';
+    var before = branchQty(productId, branchId);
+    var r = applyStockChange({
+      branchId: branchId, productId: productId, type: type, qty: qty,
+      safetyQty: safetyRaw === '' ? null : int(safetyRaw),
+      memo: memoEl ? String(memoEl.value || '') : ''
+    });
+    if (!r) { toast('재고를 바꾸지 못했습니다.'); return; }
+    saveAll();
+    closeModal();
+    state.ui.stockForm = null;
+    toast(stockTypeMeta(type).label + ' · ' + p.name + ' ' + before + ' → ' + r.after + '개');
+    if (before - (type === 'out' || type === 'loss' ? qty : 0) < 0) {
+      toast('재고보다 많이 출고하여 0에서 멈췄습니다.');
+    }
+    renderAdminTab();
+    if (syncUrl() && state.pub.settings.autoSync) syncStockPush(true);
+  }
+  function openSafetyForm(productId) {
+    var p = productById(productId);
+    if (!p) return;
+    var branchId = stockBranchId();
+    openModal('<div class="modal narrow" role="dialog" aria-modal="true" aria-labelledby="satTitle">' +
+      '<div class="modal-head"><h2 id="satTitle">안전재고 설정</h2>' +
+      '<button type="button" class="icon-btn" data-act="modal:close" aria-label="닫기">✕</button></div>' +
+      '<div class="modal-body">' +
+      '<p class="hint" style="margin-bottom:10px">' + esc((state.pub.settings.shopName || '다시봄') + ' ' +
+        (branchNameOf(branchId) || '')) + ' · ' + esc(p.name) + ' — 현재고 ' + branchQty(productId, branchId) + '개</p>' +
+      '<div class="field"><label for="satQty">안전재고 (이 수량보다 적으면 부족)</label>' +
+      '<input type="number" id="satQty" min="0" step="1" inputmode="numeric" value="' +
+      safetyQtyOf(productId, branchId) + '"></div>' +
+      '<p class="hint" style="margin-top:10px">0으로 두면 부족 표시를 하지 않습니다. 지점마다 따로 정합니다.</p>' +
+      '</div>' +
+      '<div class="modal-foot"><button type="button" class="btn" data-act="modal:close">취소</button><span class="grow"></span>' +
+      '<button type="button" class="btn primary" data-act="stock:safetySave" data-id="' + esc(productId) + '">저장</button></div></div>', { noFocus: false });
+  }
+  function saveSafetyForm(productId) {
+    var p = productById(productId);
+    if (!p) return;
+    var branchId = stockBranchId();
+    var el = document.getElementById('satQty');
+    var v = el ? int(el.value) : 0;
+    if (v < 0) { toast('안전재고는 0 이상이어야 합니다.'); return; }
+    var rec = ensureInvRecord(branchId, productId);
+    if (!rec) { toast('재고 기록을 만들지 못했습니다.'); return; }
+    rec.safetyQty = v;
+    rec.updatedAt = Date.now();
+    saveAll();
+    closeModal();
+    toast(p.name + ' 안전재고를 ' + v + '개로 정했습니다.');
     renderAdminTab();
   }
 
@@ -3930,6 +4761,7 @@ body.gate-locked .cart-bar{ display:none !important; }
       '<div class="table-wrap"><table class="tbl"><thead><tr><th>상품</th><th class="num">단가</th><th class="num">수량</th>' +
       '<th class="num">금액</th><th class="num">매입가</th><th class="num">마진</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
       '<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">' +
+      '<button type="button" class="btn sm primary" data-act="rc:show" data-id="' + esc(o.id) + '">주문 확인서 보기</button>' +
       '<button type="button" class="btn sm" data-act="rc:print" data-id="' + esc(o.id) + '">확인서 인쇄</button>' +
       '<button type="button" class="btn sm" data-act="rc:copy" data-id="' + esc(o.id) + '">확인서 복사</button>' +
       '</div></div></div>';
@@ -3943,18 +4775,32 @@ body.gate-locked .cart-bar{ display:none !important; }
     if (prev === status) return;
     o.status = status;
     o.updatedAt = Date.now();
-    if (status === 'canceled' && !o.stockReturned) {
-      (o.items || []).forEach(function (it) {
-        var p = productById(it.productId);
-        if (!p) return;
-        p.stock = num(p.stock) + Math.max(1, int(it.qty));
-      });
-      o.stockReturned = true;
-    }
+    syncOrderStock(o);
     saveAll();
     toast('주문 상태를 "' + statusMeta(status).label + '(으)로 바꿨습니다.');
     renderAdminTab();
     if (state.pub.settings.syncUrl && state.pub.settings.autoSync) pushOrderStatus(o);
+  }
+
+  /* 주문 상태에 맞춰 재고를 한 번만 반영한다 — 중복 차감·중복 복원 방지.
+     · 취소·환불: 지점 재고를 입고(주문취소) 이력과 함께 되돌리고 stockRestored=true 로 표시
+     · 다시 판매 상태(접수·결제완료·완료)로 돌리면 재차감(출고) 후 표시를 바꾼다 */
+  function syncOrderStock(o) {
+    if (!o) return false;
+    if (isClosedStatus(o.status)) {
+      if (o.stockRestored) return false;
+      applyOrderStock(o, -1);
+      o.stockRestored = true;
+      o.stockApplied = false;
+      return true;
+    }
+    if (o.stockRestored || o.stockApplied === false) {
+      applyOrderStock(o, 1);
+      o.stockRestored = false;
+      o.stockApplied = true;
+      return true;
+    }
+    return false;
   }
 
   /* ---- CSV ---- */
@@ -4019,6 +4865,7 @@ body.gate-locked .cart-bar{ display:none !important; }
   function apiGet(params) {
     var url = syncUrl();
     if (!url) return Promise.reject(new Error('동기화 URL이 비어 있습니다. 설정에서 먼저 입력해 주세요.'));
+    if (typeof fetch !== 'function') return Promise.reject(new Error('이 브라우저에서는 시트 동기화를 쓸 수 없습니다.'));
     var qs = Object.keys(params || {}).map(function (k) {
       return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
     }).join('&');
@@ -4034,6 +4881,7 @@ body.gate-locked .cart-bar{ display:none !important; }
   function apiPost(payload) {
     var url = syncUrl();
     if (!url) return Promise.reject(new Error('동기화 URL이 비어 있습니다. 설정에서 먼저 입력해 주세요.'));
+    if (typeof fetch !== 'function') return Promise.reject(new Error('이 브라우저에서는 시트 동기화를 쓸 수 없습니다.'));
     return fetch(url, {
       method: 'POST',
       redirect: 'follow',
@@ -4155,6 +5003,105 @@ body.gate-locked .cart-bar{ display:none !important; }
     return extend(extend({}, o), { costTotal: c.total, costItems: c.items, cogsKnown: c.known });
   }
 
+  /* ---- 재고·입출고 이력 시트 동기화 ---- */
+  function stockInventoryPayload() {
+    var rows = [];
+    var inv = state.pub.inventory || {};
+    Object.keys(inv).forEach(function (branchId) {
+      var bag = inv[branchId] || {};
+      Object.keys(bag).forEach(function (productId) {
+        var rec = bag[productId] || {};
+        var p = productById(productId);
+        rows.push({
+          branchId: branchId,
+          branch: branchNameOf(branchId),
+          productId: productId,
+          name: p ? p.name : '',
+          qty: Math.max(0, int(rec.qty)),
+          safetyQty: Math.max(0, int(rec.safetyQty)),
+          updatedAt: num(rec.updatedAt) || Date.now()
+        });
+      });
+    });
+    return rows;
+  }
+  function stockLogPayload(l) {
+    return {
+      id: l.id, at: num(l.at), branchId: l.branchId || '',
+      branch: l.branchName || branchNameOf(l.branchId),
+      productId: l.productId || '', name: l.name || '', type: l.type || 'adjust',
+      qty: num(l.qty), before: num(l.before), after: num(l.after),
+      memo: l.memo || '', orderId: l.orderId || '', orderNo: l.orderNo || '',
+      device: l.device || '', manager: l.manager || ''
+    };
+  }
+  function pendingStockLogs() {
+    return (state.pub.stockLogs || []).filter(function (l) { return l && !l.syncedAt; });
+  }
+  /* 이 기기의 재고 현황과 아직 안 올라간 이력을 시트로 보낸다. */
+  function syncStockPush(silent) {
+    if (!syncUrl()) return new Promise(function (res) { res(null); });
+    var inv = stockInventoryPayload();
+    var logs = pendingStockLogs().map(stockLogPayload);
+    return apiPost({ action: 'stock.push', inventory: inv, logs: logs }).then(function (d) {
+      var now = Date.now();
+      (state.pub.stockLogs || []).forEach(function (l) { if (l && !l.syncedAt) l.syncedAt = now; });
+      saveAll();
+      if (!silent) toast('재고 ' + inv.length + '건 · 이력 ' + logs.length + '건을 시트에 보냈습니다.');
+      return d;
+    }).catch(function (e) {
+      if (!silent) syncDone(false, e && e.message ? e.message : String(e));
+      return null;
+    });
+  }
+  function mergeRemoteInventory(rows) {
+    var n = 0;
+    (rows || []).forEach(function (r) {
+      if (!r || !r.branchId || !r.branchId) return;
+      if (!r.productId) return;
+      var bag = invBag(r.branchId, true);
+      if (!bag) return;
+      var cur = bag[r.productId];
+      var at = num(r.updatedAt) || 0;
+      if (!cur || at >= num(cur.updatedAt)) {
+        bag[r.productId] = {
+          qty: Math.max(0, int(r.qty)),
+          safetyQty: Math.max(0, int(r.safetyQty)),
+          updatedAt: at || Date.now()
+        };
+        n++;
+      }
+    });
+    return n;
+  }
+  function mergeRemoteStockLogs(rows) {
+    var have = {};
+    (state.pub.stockLogs || []).forEach(function (l) { if (l && l.id) have[l.id] = true; });
+    var added = 0;
+    (rows || []).forEach(function (r) {
+      if (!r || !r.id || have[r.id]) return;
+      state.pub.stockLogs.push({
+        id: String(r.id), at: num(r.at),
+        branchId: r.branchId || '', branchName: r.branch || branchNameOf(r.branchId),
+        productId: r.productId || '', name: r.name || '', type: r.type || 'adjust',
+        qty: num(r.qty), before: num(r.before), after: num(r.after), memo: r.memo || '',
+        orderId: r.orderId || '', orderNo: r.orderNo || '',
+        device: r.device || '', manager: r.manager || '', syncedAt: Date.now()
+      });
+      have[r.id] = true;
+      added++;
+    });
+    if (state.pub.stockLogs.length > STOCK_LOG_MAX) {
+      state.pub.stockLogs = state.pub.stockLogs.slice(state.pub.stockLogs.length - STOCK_LOG_MAX);
+    }
+    return added;
+  }
+  function mergeRemoteStock(d) {
+    var a = mergeRemoteInventory(d && d.inventory);
+    var b = mergeRemoteStockLogs(d && d.stockLogs);
+    return { inventory: a, logs: b };
+  }
+
   function pushPendingOrders(silent) {
     var list = pendingOrders();
     if (!list.length) { if (!silent) toast('전송할 주문이 없습니다.'); return; }
@@ -4208,11 +5155,33 @@ body.gate-locked .cart-bar{ display:none !important; }
   function pullOrders() {
     if (!syncUrl()) { toast('동기화 URL을 먼저 입력해 주세요.'); return; }
     syncStart('시트에서 주문을 불러오는 중…');
-    apiGet({ action: 'orders' }).then(function (d) {
+    apiGet({ action: 'all' }).then(function (d) {
       var list = Array.isArray(d.orders) ? d.orders : [];
       list.forEach(mergeRemoteOrder);
+      mergeRemoteStock(d);
       saveAll();
-      syncDone(true, '주문 ' + list.length + '건을 확인했습니다.');
+      syncDone(true, '주문 ' + list.length + '건·재고를 확인했습니다.');
+      renderAdminTab();
+    }).catch(function (e) { syncDone(false, e.message || String(e)); });
+  }
+
+  function pushStockAction() {
+    if (!syncUrl()) { toast('동기화 URL을 먼저 입력해 주세요.'); return; }
+    syncStart('재고·이력을 시트로 보내는 중…');
+    syncStockPush(true).then(function (d) {
+      if (d === null) { syncDone(false, '재고를 보내지 못했습니다.'); return; }
+      syncDone(true, '재고 ' + stockInventoryPayload().length + '건을 시트에 저장했습니다.');
+      renderAdminTab();
+    }).catch(function (e) { syncDone(false, e.message || String(e)); });
+  }
+  function pullStockAction() {
+    if (!syncUrl()) { toast('동기화 URL을 먼저 입력해 주세요.'); return; }
+    syncStart('시트에서 재고를 불러오는 중…');
+    apiGet({ action: 'all' }).then(function (d) {
+      (d.orders || []).forEach(mergeRemoteOrder);
+      var m = mergeRemoteStock(d);
+      saveAll();
+      syncDone(true, '주문 ' + (d.orders || []).length + '건 · 재고 ' + m.inventory + '건 · 이력 ' + m.logs + '건을 반영했습니다.');
       renderAdminTab();
     }).catch(function (e) { syncDone(false, e.message || String(e)); });
   }
@@ -4221,13 +5190,15 @@ body.gate-locked .cart-bar{ display:none !important; }
     if (!syncUrl()) { toast('동기화 URL을 먼저 입력해 주세요.'); return; }
     syncStart('전체 동기화 중…');
     apiPost({ action: 'orders.push', orders: pendingOrders().map(orderPayload) })
+      .then(function () { return syncStockPush(true); })
       .then(function () { return apiGet({ action: 'all' }); })
       .then(function (d) {
         (d.orders || []).forEach(mergeRemoteOrder);
+        mergeRemoteStock(d);
         var now = Date.now();
         (state.pub.orders || []).forEach(function (o) { if (!o.syncedAt) o.syncedAt = now; });
         saveAll();
-        syncDone(true, '전체 동기화 완료 · 주문 ' + (d.orders || []).length + '건');
+        syncDone(true, '전체 동기화 완료 · 주문 ' + (d.orders || []).length + '건 · 재고 반영');
         renderAdminTab();
       })
       .catch(function (e) { syncDone(false, e.message || String(e)); });
@@ -4246,12 +5217,14 @@ body.gate-locked .cart-bar{ display:none !important; }
     }, sec * 1000);
   }
   function pullOrdersSilent() {
-    apiGet({ action: 'orders' }).then(function (d) {
+    apiGet({ action: 'all' }).then(function (d) {
       (d.orders || []).forEach(mergeRemoteOrder);
+      mergeRemoteStock(d);
       savePub(); saveSec();
       state.pub.settings.lastSyncAt = Date.now();
       savePub();
       refreshSyncBox();
+      if (state.ui.tab === 'monitor' && state.ui.mode === 'admin') renderAdminTab();
     }).catch(function () { /* 조용히 무시 */ });
   }
 
@@ -4270,7 +5243,9 @@ body.gate-locked .cart-bar{ display:none !important; }
       '<button type="button" class="btn sm" data-act="sync:pushProducts">품목 시트로 저장</button>' +
       '<button type="button" class="btn sm" data-act="sync:pullProducts">품목 불러오기</button>' +
       '<button type="button" class="btn sm" data-act="sync:pushOrders">주문 전송</button>' +
-      '<button type="button" class="btn sm" data-act="sync:pullOrders">주문 내역 조회</button>' +
+      '<button type="button" class="btn sm" data-act="sync:pullOrders">주문·재고 조회</button>' +
+      '<button type="button" class="btn sm" data-act="sync:pushStock">재고 시트로 저장</button>' +
+      '<button type="button" class="btn sm" data-act="sync:pullStock">재고 불러오기</button>' +
       '</div>' +
       '<div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:10px 12px;background:var(--surface-2);border-radius:10px">' +
       '<label class="switch"><input type="checkbox" id="autoSync"' + (s.autoSync ? ' checked' : '') + '><span>자동 동기화</span></label>' +
@@ -4321,7 +5296,7 @@ body.gate-locked .cart-bar{ display:none !important; }
       '<div class="field"><label for="stShop">가게 이름</label><input type="text" id="stShop" value="' + esc(s.shopName || '') + '" placeholder="다시봄"></div>' +
       '<div class="field"><label for="stSub">슬로건 / 부제</label><input type="text" id="stSub" value="' + esc(s.subtitle || '') + '" placeholder="텔로미어 라이프스타일"></div>' +
       '<div class="field"><label for="stDevice">이 기기 이름</label><input type="text" id="stDevice" value="' + esc(s.deviceName || '') + '" placeholder="예: 카운터 태블릿"></div>' +
-      '<div class="field"><label for="stManager">담당자</label><input type="text" id="stManager" value="' + esc(s.managerName || '') + '" placeholder="예: 류철희"></div>' +
+      '<div class="field"><label for="stManager">담당자</label><input type="text" id="stManager" value="' + esc(s.managerName || '') + '" placeholder="예: 다시봄 담당자"></div>' +
       '</div>' +
       '<div style="display:flex;justify-content:flex-end;margin-top:10px"><button type="button" class="btn primary sm" data-act="set:save">저장</button></div>' +
       '</div>' +
@@ -4330,7 +5305,7 @@ body.gate-locked .cart-bar{ display:none !important; }
       '<div class="form-grid">' +
       '<div class="field"><label for="stBank">은행명</label><input type="text" id="stBank" value="' + esc(pay.bank) + '" placeholder="예: 국민은행"></div>' +
       '<div class="field"><label for="stAccount">계좌번호</label><input type="text" id="stAccount" inputmode="numeric" value="' + esc(pay.account) + '" placeholder="예: 123-45-6789012"></div>' +
-      '<div class="field"><label for="stHolder">예금주</label><input type="text" id="stHolder" value="' + esc(pay.holder) + '" placeholder="예: 류철희"></div>' +
+      '<div class="field"><label for="stHolder">예금주</label><input type="text" id="stHolder" value="' + esc(pay.holder) + '" placeholder="예: 예금주 성함"></div>' +
       '<div class="field"><label for="stPayLink">간편 송금 링크 (https://)</label><input type="url" id="stPayLink" value="' + esc(pay.link) + '" placeholder="https://toss.me/... 또는 https://link.kakao.com/..."></div>' +
       '</div>' +
       '<p class="hint" style="margin-top:8px">토스·카카오페이 송금 링크는 <b>https://</b> 주소만 확인서에 표시됩니다(http·다른 형식은 무시). 계좌와 링크는 고객에게 보여 주는 공개 결제 정보로 이 기기에 저장됩니다.</p>' +
@@ -4722,7 +5697,7 @@ body.gate-locked .cart-bar{ display:none !important; }
         case 'remove': removeFromCart(id); break;
         case 'dqty': {
           var p = productById(state.ui.detailId);
-          var st = p ? num(p.stock) : 0;
+          var st = p ? availableQty(p) : 0;
           state.ui.detailQty = clamp(state.ui.detailQty + int(el.getAttribute('data-d')), 1, st > 0 ? st : 99);
           updateDetailTotal();
           break;
@@ -4740,6 +5715,17 @@ body.gate-locked .cart-bar{ display:none !important; }
         case 'pin:ok': submitPin(); break;
         case 'admin:lock': setMode('customer'); break;
         case 'atab': state.ui.tab = el.getAttribute('data-tab'); renderAdminTab(); break;
+        case 'mon:period': state.ui.monPeriod = el.getAttribute('data-period'); renderAdminTab(); break;
+        case 'mon:branch': state.ui.monBranch = el.getAttribute('data-branch'); renderAdminTab(); break;
+        case 'mon:refresh': refreshMonitor(false); break;
+        case 'mon:view': openOrderView(id); break;
+        case 'stock:new': openStockForm({ productId: id || '', type: el.getAttribute('data-type') || 'in' }); break;
+        case 'stock:safety': openSafetyForm(id); break;
+        case 'stock:safetySave': saveSafetyForm(id); break;
+        case 'stock:save': saveStockForm(); break;
+        case 'sf:type': setStockFormType(el.getAttribute('data-type')); break;
+        case 'export:stock': exportStockCSV(); break;
+        case 'rc:show': showReceipt(id); break;
         case 'period': state.ui.period = el.getAttribute('data-period'); renderAdminTab(); break;
         case 'operiod': state.ui.orderPeriod = el.getAttribute('data-period'); renderAdminTab(); break;
         case 'settle:apply': state.ui.from = val('#rangeFrom'); state.ui.to = val('#rangeTo'); renderAdminTab(); break;
@@ -4777,6 +5763,8 @@ body.gate-locked .cart-bar{ display:none !important; }
         case 'sync:pullProducts': pullProducts(); break;
         case 'sync:pushOrders': pushPendingOrders(false); break;
         case 'sync:pullOrders': pullOrders(); break;
+        case 'sync:pushStock': pushStockAction(); break;
+        case 'sync:pullStock': pullStockAction(); break;
         case 'set:save': saveSettings(); break;
         case 'rc:copyacct': copyAccount(); break;
         case 'rc:openlink': openTransferLink(); break;
@@ -4870,6 +5858,14 @@ body.gate-locked .cart-bar{ display:none !important; }
         }
       } else if (id === 'syncUrl') {
         // 저장 버튼으로 반영
+      } else if (id === 'stockQuery') {
+        state.ui.stockQuery = e.target.value;
+        var body3 = $('#adminBody');
+        if (body3) {
+          body3.innerHTML = stockHTML();
+          var inp3 = $('#stockQuery');
+          if (inp3) { inp3.focus(); inp3.setSelectionRange(inp3.value.length, inp3.value.length); }
+        }
       }
     });
 
@@ -4895,6 +5891,12 @@ body.gate-locked .cart-bar{ display:none !important; }
       } else if (t.id === 'orderStatus') { state.ui.orderStatus = t.value; renderAdminTab(); }
       else if (t.id === 'orderBranch') { state.ui.orderBranch = t.value; renderAdminTab(); }
       else if (t.id === 'adminBranch') { state.ui.adminBranch = t.value; renderAdminTab(); }
+      else if (t.id === 'stockBranchSel') { state.ui.stockBranch = t.value; renderAdminTab(); }
+      else if (t.id === 'stockCat') { state.ui.stockCat = t.value; renderAdminTab(); }
+      else if (t.id === 'stockState') { state.ui.stockState = t.value; renderAdminTab(); }
+      else if (t.id === 'stockHistBranch') { state.ui.stockHistBranch = t.value; renderAdminTab(); }
+      else if (t.id === 'stockHistType') { state.ui.stockHistType = t.value; renderAdminTab(); }
+      else if (t.id === 'sfBranch' || t.id === 'sfProduct') { updateStockFormNow(); }
       else if (t.id === 'autoSync') {
         state.pub.settings.autoSync = !!t.checked;
         savePub();
@@ -5043,7 +6045,21 @@ body.gate-locked .cart-bar{ display:none !important; }
       currentBranch: currentBranch, bootApp: boot,
       printHTML: printHTML, setMode: setMode, filteredOrders: filteredOrders,
       confirmOrder: confirmOrder, setBranch: setBranch,
-      pushProducts: pushProducts, syncNow: syncNow, exportOrdersCSV: exportOrdersCSV
+      pushProducts: pushProducts, syncNow: syncNow, exportOrdersCSV: exportOrdersCSV,
+      /* 재고 입출고 · 본점 판매 모니터링 */
+      stockHTML: stockHTML, stockRows: stockRows, stockCounts: stockCounts, stockCSVRows: stockCSVRows,
+      stockLogsFiltered: stockLogsFiltered, exportStockCSV: exportStockCSV, stockLogLabel: stockLogLabel,
+      openStockForm: openStockForm, saveStockForm: saveStockForm, openSafetyForm: openSafetyForm,
+      saveSafetyForm: saveSafetyForm, setStockFormType: setStockFormType, updateStockFormNow: updateStockFormNow,
+      stockBranchId: stockBranchId, applyStockChange: applyStockChange, applyOrderStock: applyOrderStock,
+      branchQty: branchQty, safetyQtyOf: safetyQtyOf, stockStateOf: stockStateOf, availableQty: availableQty,
+      addToCart: addToCart, changeQty: changeQty, removeFromCart: removeFromCart, closeModal: closeModal,
+      seedStockStructures: seedStockStructures, syncOrderStock: syncOrderStock, isClosedStatus: isClosedStatus,
+      setOrderStatus: setOrderStatus, stockTypeMeta: stockTypeMeta, stockTypes: STOCK_TYPES,
+      monitorHTML: monitorHTML, monitorStats: monitorStats, monitorOrders: monitorOrders,
+      monitorRange: monitorRange, monitorPeriods: MON_PERIODS, refreshMonitor: refreshMonitor, monOnEnter: monOnEnter,
+      syncStockPush: syncStockPush, stockInventoryPayload: stockInventoryPayload, mergeRemoteStock: mergeRemoteStock,
+      pendingStockLogs: pendingStockLogs, stockLogPayload: stockLogPayload
     };
   }
   if (typeof window !== 'undefined') window.GCOOP = api;
