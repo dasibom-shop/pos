@@ -4073,10 +4073,14 @@ body.gate-locked .cart-bar{ display:none !important; }
   function monitorSyncLine() {
     var s = state.pub.settings;
     var on = !!syncUrl();
-    return '<div class="mon-status"><span class="dot ' + (on ? 'ok' : '') + '"></span>' +
-      '<span>' + (on
-        ? '구글 시트 연결됨 · 다른 지점 기기의 주문·재고를 함께 불러옵니다'
-        : '현재 기기 데이터 기준 · 구글 시트 연결 시 타 지점 실시간 통합') + '</span>' +
+    var failed = String(state.ui.monMsg || '').indexOf('갱신 실패') === 0;
+    var cls = !on ? '' : (failed ? 'err' : 'ok');
+    var text = !on
+      ? '현재 기기 데이터 기준 · 구글 시트 연결 시 타 지점 실시간 통합'
+      : (failed ? '구글 시트에 연결하지 못했습니다 · 이 기기 데이터로 표시'
+        : '구글 시트 연결됨 · 다른 지점 기기의 주문·재고를 함께 불러옵니다');
+    return '<div class="mon-status"><span class="dot ' + cls + '"></span>' +
+      '<span>' + text + '</span>' +
       '<span class="hint">마지막 갱신 ' + (s.lastSyncAt ? fmtDateTime(s.lastSyncAt) : '없음') +
       (state.ui.monMsg ? ' · ' + esc(state.ui.monMsg) : '') + '</span></div>';
   }
