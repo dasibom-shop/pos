@@ -786,6 +786,11 @@ body.gate-locked .cart-bar{ display:none !important; }
 .mon-status{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:11.5px; color:var(--muted); }
 .mon-status .dot{ flex:0 0 8px; }
 @media (max-width: 520px){
+  .panel{ padding:13px; }
+  .kpis{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+  .kpi{ padding:11px 12px; }
+  .kpi .v{ font-size:18px; }
+  .kpi .k{ font-size:10.5px; }
   .mon-cards{ grid-template-columns:1fr 1fr; }
   .mon-card .mc-rev{ font-size:17px; }
   .stock-row-actions{ flex-wrap:wrap; }
