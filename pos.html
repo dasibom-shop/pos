@@ -4521,6 +4521,7 @@ body.gate-locked .cart-bar{ display:none !important; }
   }
 
   /* 입출고 등록 모달 — 지점·품목·구분·수량·사유·안전재고 */
+  var stockFormQtyTouched = false;
   function openStockForm(opts) {
     opts = opts || {};
     var branchId = opts.branchId || stockBranchId();
@@ -4560,6 +4561,7 @@ body.gate-locked .cart-bar{ display:none !important; }
       '<button type="button" class="btn primary" data-act="stock:save">등록</button></div></div>';
 
     openModal(html, { noFocus: false });
+    stockFormQtyTouched = false;
     var qEl = document.getElementById('sfQty');
     if (qEl) qEl.value = String((type === 'adjust' && productId) ? branchQty(productId, branchId) : 1);
     updateStockFormNow();
@@ -4581,6 +4583,10 @@ body.gate-locked .cart-bar{ display:none !important; }
     }
     var lbl = document.getElementById('sfQtyLabel');
     if (lbl) lbl.textContent = f.type === 'adjust' ? '조정 후 재고' : '수량';
+    var qEl = document.getElementById('sfQty');
+    if (qEl && !stockFormQtyTouched) {
+      qEl.value = String((f.type === 'adjust' && productId) ? qty : 1);
+    }
   }
   function setStockFormType(type) {
     if (!state.ui.stockForm) state.ui.stockForm = {};
@@ -5858,6 +5864,8 @@ body.gate-locked .cart-bar{ display:none !important; }
         }
       } else if (id === 'syncUrl') {
         // 저장 버튼으로 반영
+      } else if (id === 'sfQty') {
+        stockFormQtyTouched = true;
       } else if (id === 'stockQuery') {
         state.ui.stockQuery = e.target.value;
         var body3 = $('#adminBody');
