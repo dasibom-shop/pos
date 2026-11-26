@@ -477,6 +477,89 @@ img{ max-width:100%; }
 .detail-qty .qty button{ width:38px; height:38px; }
 .detail-qty .qty span{ min-width:34px; font-size:15px; }
 
+/* ---------- 제품 설명서(리플렛) ---------- */
+.leaf-open{
+  display:flex; align-items:center; gap:12px; width:100%;
+  min-height:56px; padding:10px 14px; cursor:pointer;
+  border:1px solid var(--accent-2); border-radius:14px;
+  background:linear-gradient(140deg,#faf5fc,#f2e9f7);
+  color:#3f2450; text-align:left;
+  box-shadow:0 2px 8px rgba(93,57,105,.06);
+  transition:background .18s, border-color .18s, transform .05s;
+}
+.leaf-open:hover{ background:linear-gradient(140deg,#f6edfa,#ecdff4); border-color:var(--brand-3); }
+.leaf-open:active{ transform:translateY(1px); }
+.leaf-open .lo-ico{
+  flex:0 0 auto; width:34px; height:34px; border-radius:10px;
+  background:#fff; border:1px solid var(--accent-2); color:var(--brand);
+  display:grid; place-items:center;
+}
+.leaf-open .lo-txt{ display:flex; flex-direction:column; gap:2px; flex:1 1 auto; min-width:0; }
+.leaf-open .lo-txt b{ font-size:14px; letter-spacing:-.01em; }
+.leaf-open .lo-txt span{ font-size:11.5px; color:var(--muted); font-weight:600; line-height:1.4; }
+.leaf-open .lo-arrow{ flex:0 0 auto; font-size:20px; line-height:1; color:var(--brand-2); }
+
+.modal-head .leaf-back{ margin-left:0; font-size:19px; }
+.leaf-modal .modal-body{ padding:0; }
+.leaf-hero{
+  padding:16px 20px 14px; display:flex; flex-direction:column; gap:9px;
+  background:linear-gradient(170deg,#f7f2fa,#ffffff); border-bottom:1px solid var(--line);
+}
+.leaf-chips{ display:flex; flex-wrap:wrap; gap:6px; }
+.leaf-chip{
+  font-size:10.5px; font-weight:800; letter-spacing:.01em; color:#4a2b55;
+  background:#fff; border:1px solid var(--accent-2); border-radius:999px; padding:3px 9px;
+}
+.leaf-name{ font-size:20px; line-height:1.3; letter-spacing:-.02em; }
+.leaf-tagline{ font-size:13.5px; line-height:1.6; color:var(--ink-2); }
+.leaf-body{ padding:16px 20px 12px; display:flex; flex-direction:column; gap:16px; }
+.leaf-figure{ margin:0; border:1px solid var(--line); border-radius:12px; background:#fbfafc; overflow:hidden; }
+.leaf-figure img{ display:block; width:100%; max-width:100%; height:auto; }
+.leaf-sec{ display:flex; flex-direction:column; gap:8px; }
+.leaf-sec > h3{
+  font-size:12px; color:var(--brand-2); letter-spacing:.02em;
+  display:flex; align-items:center; gap:7px;
+}
+.leaf-sec > h3::before{ content:""; width:3px; height:12px; border-radius:2px; background:var(--accent); }
+.leaf-sec p{ font-size:13px; line-height:1.75; color:var(--ink-2); overflow-wrap:anywhere; }
+.leaf-sec ul{ margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:7px; }
+.leaf-sec li{
+  position:relative; padding-left:16px;
+  font-size:13px; line-height:1.65; color:var(--ink-2); overflow-wrap:anywhere;
+}
+.leaf-sec li::before{
+  content:""; position:absolute; left:2px; top:8px;
+  width:5px; height:5px; border-radius:50%; background:var(--brand-3);
+}
+.leaf-sec.caution{
+  background:#fdf9ef; border:1px solid #f0e2c0; border-radius:12px; padding:12px 14px;
+}
+.leaf-sec.caution > h3{ color:#8a6a1f; }
+.leaf-sec.caution > h3::before{ background:#d8a13a; }
+.leaf-sec.caution li{ color:#7a5a22; }
+.leaf-sec.caution li::before{ background:#d8a13a; }
+.leaf-info{ border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#fff; }
+.leaf-info-row{ display:grid; grid-template-columns:minmax(88px,32%) 1fr; border-top:1px solid var(--line); }
+.leaf-info-row:first-child{ border-top:0; }
+.leaf-info dt{
+  font-size:11.5px; font-weight:800; color:var(--muted); background:var(--surface-2);
+  padding:8px 10px; overflow-wrap:anywhere;
+}
+.leaf-info dd{
+  margin:0; padding:8px 11px; font-size:12.5px; line-height:1.7; color:var(--ink-2);
+  white-space:pre-line; overflow-wrap:anywhere;
+}
+.leaf-gallery{ display:flex; flex-direction:column; gap:10px; }
+.leaf-disclaimer{
+  font-size:11px; line-height:1.65; color:var(--muted);
+  background:var(--surface-2); border-radius:10px; padding:10px 12px;
+}
+.leaf-msg{
+  border:1px solid var(--accent-2); background:#f7f2fa; border-radius:12px;
+  padding:13px 15px; font-size:12.5px; line-height:1.7; color:#4a2b55;
+}
+.leaf-msg b{ display:block; margin-bottom:4px; font-size:13px; }
+
 /* ---------- 영수증 ---------- */
 .receipt{
   border:1px solid var(--accent-2); border-radius:14px; padding:18px;
@@ -845,6 +928,14 @@ body.gate-locked .cart-bar{ display:none !important; }
   .form-grid{ grid-template-columns:1fr; }
   .admin-top h1{ font-size:17px; }
 }
+@media (max-width: 520px){
+  .leaf-hero{ padding:14px 16px 13px; }
+  .leaf-body{ padding:14px 16px 10px; }
+  .leaf-name{ font-size:18px; }
+  .leaf-info-row{ grid-template-columns:1fr; padding:8px 0 10px; }
+  .leaf-info dt{ background:transparent; padding:0 10px 3px; font-size:11px; }
+  .leaf-info dd{ padding:0 10px; }
+}
 @media (max-width: 420px){
   .grid, .line-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
   .modes button{ padding:7px 10px; font-size:12px; }
@@ -1039,9 +1130,13 @@ body.gate-locked .cart-bar{ display:none !important; }
 <noscript>
   <div style="padding:24px;text-align:center">이 화면은 자바스크립트가 필요합니다. 브라우저 설정에서 자바스크립트를 켜 주세요.</div>
 </noscript>
+<!-- 제품 설명서(리플렛) 원문 데이터 — 같은 폴더에 두면 상품 상세에서 설명서가 열립니다.
+     파일이 없으면 POS는 그대로 동작하고 설명서 버튼만 나오지 않습니다. -->
+<script src="leaflet-data.js"></script>
 <script>
 /* =========================================================================
-   지쿱 POS — 애플리케이션 스크립트 (외부 의존 없음, ES5+ 브라우저 지원)
+   지쿱 POS — 애플리케이션 스크립트 (외부 CSS/CDN 의존 없음, ES5+ 브라우저 지원)
+   · leaflet-data.js 는 선택 데이터 파일(제품 설명서 원문). 없으면 설명서 기능만 빠진다.
    구조
      1) 상수 · 유틸리티(순수 함수)
      2) 저장소(localStorage)  ─ 공개 저장소 / 비밀 저장소 분리
@@ -1311,6 +1406,8 @@ body.gate-locked .cart-bar{ display:none !important; }
       orderQuery: '',
       detailId: null,
       detailQty: 1,
+      leafId: null,             // 제품 설명서(리플렛)를 열어 둔 품목
+      leafQty: 0,               // 설명서에서 상세로 돌아갈 때 되살릴 수량
       monPeriod: 'today',
       monBranch: 'all',
       monBusy: false,
@@ -2627,6 +2724,7 @@ body.gate-locked .cart-bar{ display:none !important; }
     var root = $('#modalRoot');
     if (root) root.innerHTML = '';
     document.body.style.overflow = '';
+    if (state && state.ui && state.ui.leafId) { state.ui.leafId = null; state.ui.leafQty = 0; }
   }
 
   function telomereSVG(size) {
@@ -3243,6 +3341,7 @@ body.gate-locked .cart-bar{ display:none !important; }
       '<div class="detail-price"><b>' + groupNum(p.price) + '</b><span>원 · 소비자가</span></div>' +
       '<p class="stock-inline">현재 지점 재고 <b>' + currentStockState(p).qty + '개</b>' +
       (out ? ' · 품절' : (currentStockState(p).state === 'low' ? ' · 안전재고(' + currentStockState(p).safety + '개) 미만' : '')) + '</p>' +
+      leafletOpenHTML(p) +
       (points.length ? '<div class="dsec"><h3>핵심 포인트</h3><ul>' +
         points.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>' : '') +
       (p.ingredients ? '<div class="dsec"><h3>주요 성분 · 기능성</h3><p>' + nl2br(p.ingredients) + '</p></div>' : '') +
@@ -3269,6 +3368,202 @@ body.gate-locked .cart-bar{ display:none !important; }
     if (!p) return;
     var qEl = $('#detailQty'); if (qEl) qEl.textContent = String(state.ui.detailQty);
     var tEl = $('#detailTotal'); if (tEl) tEl.textContent = fmtWon(int(p.price) * state.ui.detailQty);
+  }
+
+  /* ============ 4-4b) 제품 설명서(리플렛) ============
+     leaflet-data.js 의 window.LEAFLET_DATA[productId] 원문을 그대로 보여 준다.
+     · 없는 항목("", [], "확인 불가")은 섹션을 비우거나 생략한다.
+     · 출처 표기·공식몰 링크·이미지 저장/공유 버튼은 넣지 않는다(고객에게 화면으로만 보여 줌).
+     · 상세 이미지는 loading="lazy" 로 지연 로드해 모바일에서 바로 뜨게 한다. */
+  function leafletStore() {
+    var store = null;
+    try { store = (typeof window !== 'undefined' && window.LEAFLET_DATA) ? window.LEAFLET_DATA : null; } catch (e) { store = null; }
+    return (store && typeof store === 'object') ? store : null;
+  }
+  function leafletDataOf(id) {
+    var store = leafletStore();
+    if (!store || !id) return null;
+    var d = store[id];
+    return (d && typeof d === 'object') ? d : null;
+  }
+  function leafletAvailable(id) { return !!leafletDataOf(id); }
+  /* 값이 실제로 있는지 — 빈 문자열 · 빈 배열 · "확인 불가" 는 비어 있는 것으로 본다 */
+  function leafletHas(v) {
+    if (v === null || v === undefined) return false;
+    if (typeof v === 'string') {
+      var s = v.replace(/\s+/g, ' ').trim();
+      return !!s && s !== '-' && s.indexOf('확인 불가') !== 0;
+    }
+    if (typeof v === 'number') return isFinite(v);
+    return true;
+  }
+  function leafletList(list, skip) {
+    if (!Array.isArray(list)) return [];
+    var skipList = Array.isArray(skip) ? skip : [];
+    var out = [];
+    list.forEach(function (x) {
+      if (!leafletHas(x)) return;
+      var s = String(x).replace(/[ \t]+\n/g, '\n').trim();
+      if (s === '') return;
+      if (skipList.indexOf(s) >= 0) return;
+      if (out.indexOf(s) < 0) out.push(s);
+    });
+    return out;
+  }
+  function leafletSec(title, inner, cls) {
+    if (!inner) return '';
+    return '<section class="leaf-sec' + (cls ? ' ' + cls : '') + '"><h3>' + esc(title) + '</h3>' + inner + '</section>';
+  }
+  function leafletUL(items) {
+    if (!items || !items.length) return '';
+    return '<ul>' + items.map(function (x) { return '<li>' + nl2br(x) + '</li>'; }).join('') + '</ul>';
+  }
+  function leafletP(v) { return leafletHas(v) ? '<p>' + nl2br(v) + '</p>' : ''; }
+  function leafletFigure(src, alt) {
+    if (!leafletHas(src)) return '';
+    return '<figure class="leaf-figure"><img src="' + esc(src) + '" alt="' + esc(alt) + '"' +
+      ' loading="lazy" decoding="async" onerror="this.parentNode.hidden=true"></figure>';
+  }
+  function leafletInfoTable(rows) {
+    var out = [];
+    (Array.isArray(rows) ? rows : []).forEach(function (row) {
+      if (!row || !row.length) return;
+      var label = leafletHas(row[0]) ? String(row[0]).trim() : '';
+      var value = leafletHas(row[1]) ? String(row[1]).trim() : '';
+      if (!label || !value) return;
+      out.push('<div class="leaf-info-row"><dt>' + nl2br(label) + '</dt><dd>' + nl2br(value) + '</dd></div>');
+    });
+    if (!out.length) return '';
+    return '<div class="leaf-info">' + out.join('') + '</div>';
+  }
+  function leafletHeroHTML(p, d) {
+    var chips = [];
+    var type = leafletHas(d.productType) ? String(d.productType).trim() : '';
+    var cap = leafletHas(d.capacity) ? String(d.capacity).trim() : '';
+    if (type) chips.push(type);
+    if (cap) chips.push(cap);
+    var name = leafletHas(d.officialName) ? String(d.officialName).trim() : ((d && d.name) || (p && p.name) || '');
+    var tagline = leafletHas(d.tagline) ? String(d.tagline).trim() : '';
+    return '<div class="leaf-hero">' +
+      (chips.length ? '<div class="leaf-chips">' + chips.map(function (c) {
+        return '<span class="leaf-chip">' + esc(c) + '</span>';
+      }).join('') + '</div>' : '') +
+      '<h2 class="leaf-name">' + esc(name) + '</h2>' +
+      (tagline ? '<p class="leaf-tagline">' + nl2br(tagline) + '</p>' : '') +
+      '</div>';
+  }
+  /* 판매원 로그인이 막혀 원문을 못 가져온 품목 — POS에 정리된 설명 + 대표 이미지 1장 + 안내 */
+  function leafletFallbackHTML(p, d) {
+    var imgs = (d && Array.isArray(d.images)) ? d.images.filter(leafletHas) : [];
+    var main = imgs.length ? imgs[0] : (p && p.image ? p.image : '');
+    var points = (p && Array.isArray(p.points)) ? p.points.filter(function (x) { return String(x || '').trim(); }) : [];
+    var body = '';
+    body += leafletFigure(main, (p && p.name) || '');
+    body += '<div class="leaf-msg"><b>상세 설명서는 지쿱 공식몰 판매원 로그인 후 확인이 필요해요</b>' +
+      '이 품목은 공식몰 상세 페이지가 판매원 로그인에서만 열려, 지금은 POS에 정리해 둔 설명과 대표 이미지만 보여 드립니다. 상담할 때 참고해 주세요.</div>';
+    body += leafletSec('핵심 포인트', leafletUL(points));
+    if (p && leafletHas(p.ingredients)) body += leafletSec('주요 성분 · 기능성', leafletP(p.ingredients));
+    if (p && leafletHas(p.usage)) body += leafletSec('섭취 · 사용 방법', leafletP(p.usage));
+    if (p && leafletHas(p.caution)) body += leafletSec('주의사항', leafletP(p.caution), 'caution');
+    return leafletHeroHTML(p, d) + '<div class="leaf-body">' + body + '</div>';
+  }
+  function leafletBodyHTML(p, d) {
+    d = d || {};
+    if (d.unavailable) return leafletFallbackHTML(p, d);
+    var imgs = (Array.isArray(d.images) ? d.images : []).filter(leafletHas);
+    var main = imgs.length ? imgs[0] : (p && p.image ? p.image : '');
+    var gallery = imgs.slice(1);
+    var storage = leafletHas(d.storage) ? String(d.storage).trim() : '';
+    var body = '';
+    body += leafletFigure(main, (d.officialName || d.name || (p && p.name) || ''));
+    body += leafletSec('핵심 특징', leafletUL(leafletList(d.features)));
+    if (leafletHas(d.ingredients)) body += leafletSec('원재료 · 성분', leafletP(d.ingredients));
+    if (leafletHas(d.functionClaim)) body += leafletSec('기능 정보', leafletP(d.functionClaim));
+    if (leafletHas(d.usage)) body += leafletSec('섭취 · 사용 방법', leafletP(d.usage));
+    body += leafletSec('주의사항', leafletUL(leafletList(d.cautions, storage ? [storage] : [])), 'caution');
+    if (storage) body += leafletSec('보관 방법', leafletP(storage));
+    body += leafletSec('섭취 대상', leafletUL(leafletList(d.audience)));
+    var info = leafletInfoTable(d.infoTable);
+    if (info) body += leafletSec('제품 정보 고시', info);
+    if (leafletHas(d.disclaimer)) {
+      /* 고시 표에 같은 문구가 이미 있으면 안내문을 또 쓰지 않는다 */
+      var disc = String(d.disclaimer).replace(/\s+/g, ' ').trim();
+      var dup = false;
+      (Array.isArray(d.infoTable) ? d.infoTable : []).forEach(function (row) {
+        if (row && row[1] && String(row[1]).replace(/\s+/g, ' ').indexOf(disc) >= 0) dup = true;
+      });
+      if (!dup) body += '<p class="leaf-disclaimer">' + nl2br(d.disclaimer) + '</p>';
+    }
+    if (gallery.length) {
+      body += leafletSec('상세 이미지', '<div class="leaf-gallery">' + gallery.map(function (src) {
+        return leafletFigure(src, (d.name || '') + ' 상세 이미지');
+      }).join('') + '</div>');
+    }
+    return leafletHeroHTML(p, d) + '<div class="leaf-body">' + body + '</div>';
+  }
+  /* 상품 상세 안의 "제품 설명서 보기" 버튼 — 설명서 데이터가 있을 때만 나온다 */
+  function leafletOpenHTML(p) {
+    var d = leafletDataOf(p && p.id);
+    if (!d) return '';
+    var sub = d.unavailable ? '제품 설명 · 대표 이미지 (상세는 판매원 확인 필요)' : '제품 특징 · 성분 · 섭취법 · 상세 이미지';
+    return '<button type="button" class="leaf-open" data-act="leaf:open" data-id="' + esc(p.id) + '">' +
+      '<span class="lo-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h7l5 5v12H6z"/><path d="M13 3.5v5h5"/><path d="M9 12h6M9 15.5h6"/></svg></span>' +
+      '<span class="lo-txt"><b>제품 설명서 보기</b><span>' + esc(sub) + '</span></span>' +
+      '<span class="lo-arrow" aria-hidden="true">›</span></button>';
+  }
+  function openLeaflet(id, opts) {
+    var p = productById(id);
+    var d = leafletDataOf(id);
+    if (!p || !d) { toast('제품 설명서가 없습니다.'); return; }
+    state.ui.leafId = id;
+    state.ui.leafQty = state.ui.detailQty || 1;
+    var out = isSoldOut(p);
+    var qty = state.ui.detailQty || 1;
+    var html = '<div class="modal wide leaf-modal" role="dialog" aria-modal="true" aria-labelledby="leafName">' +
+      '<div class="modal-head">' +
+      '<button type="button" class="icon-btn leaf-back" data-act="leaf:back" aria-label="상품 상세로 돌아가기">←</button>' +
+      '<h2 id="leafName">제품 설명서</h2>' +
+      '<span class="kicker">Leaflet</span>' +
+      '<button type="button" class="icon-btn" data-act="modal:close" aria-label="닫기">✕</button>' +
+      '</div>' +
+      '<div class="modal-body">' + leafletBodyHTML(p, d) + '</div>' +
+      '<div class="modal-foot">' +
+      '<div class="detail-qty"><div class="qty">' +
+      '<button type="button" data-act="dqty" data-d="-1" aria-label="수량 줄이기">−</button>' +
+      '<span id="detailQty">' + qty + '</span>' +
+      '<button type="button" data-act="dqty" data-d="1" aria-label="수량 늘리기">+</button>' +
+      '</div></div>' +
+      '<button type="button" class="btn primary grow" data-act="detail:add" data-id="' + esc(p.id) + '"' + (out ? ' disabled' : '') + '>' +
+      (out ? '품절' : '장바구니 담기 · <b id="detailTotal">' + fmtWon(int(p.price) * qty) + '</b>') +
+      '</button>' +
+      '</div></div>';
+    openModal(html, { noFocus: true });
+    var body = $('#modalRoot .modal-body');
+    if (body) { try { body.scrollTop = 0; } catch (e) { /* noop */ } }
+    if (!opts || !opts.noNav) pushNav('leaflet');
+  }
+  /* 설명서 → 상품 상세로 (선택한 수량 유지) */
+  function showDetailFromLeaflet(id) {
+    var q = state.ui.leafQty || 0;
+    state.ui.leafId = null;
+    state.ui.leafQty = 0;
+    var p = productById(id);
+    if (!p) { closeModal(); return; }
+    openDetail(id);
+    if (q > 1) {
+      state.ui.detailQty = Math.max(1, q);
+      updateDetailTotal();
+    }
+  }
+  function leafletBack() {
+    var id = state.ui.leafId;
+    if (!id) { closeModal(); return; }
+    var canPop = false;
+    try { canPop = !!(typeof window !== 'undefined' && window.history && typeof window.history.back === 'function'); } catch (e) { canPop = false; }
+    if (canPop) {
+      try { window.history.back(); return; } catch (e) { /* 아래로 진행 */ }
+    }
+    showDetailFromLeaflet(id);
   }
 
   /* ============ 4-5) 주문 생성 ============ */
@@ -5738,6 +6033,8 @@ body.gate-locked .cart-bar{ display:none !important; }
         case 'cat': state.ui.category = el.getAttribute('data-cat'); renderCats(); renderGrid(); break;
         case 'add': addToCart(id, 1); break;
         case 'detail': openDetail(id); break;
+        case 'leaf:open': openLeaflet(id); break;
+        case 'leaf:back': leafletBack(); break;
         case 'qty': changeQty(id, int(el.getAttribute('data-d'))); break;
         case 'remove': removeFromCart(id); break;
         case 'dqty': {
@@ -5853,6 +6150,7 @@ body.gate-locked .cart-bar{ display:none !important; }
     } catch (e) { /* noop */ }
     on(window, 'popstate', function () {
       var mr = $('#modalRoot');
+      if (mr && mr.innerHTML && state.ui.leafId) { showDetailFromLeaflet(state.ui.leafId); return; }
       if (mr && mr.innerHTML) { closeModal(); return; }
       if (document.body && document.body.classList.contains('sheet-open')) { closeCartSheet(); return; }
       if (state.ui.mode === 'admin') { setMode('customer'); return; }
@@ -5867,6 +6165,7 @@ body.gate-locked .cart-bar{ display:none !important; }
         openDetail(t.getAttribute('data-id'));
       }
       if (e.key === 'Escape') {
+        if (state.ui.leafId) { showDetailFromLeaflet(state.ui.leafId); return; }
         if ($('#modalRoot') && $('#modalRoot').innerHTML) closeModal();
         else document.body.classList.remove('sheet-open');
       }
@@ -6071,6 +6370,10 @@ body.gate-locked .cart-bar{ display:none !important; }
       settleHTML: settleHTML, productsHTML: productsHTML, ordersHTML: ordersHTML,
       syncHTML: syncHTML, settingsHTML: settingsHTML,
       openProductForm: openProductForm, openDetail: openDetail, showReceipt: showReceipt,
+      /* 제품 설명서(리플렛) */
+      openLeaflet: openLeaflet, leafletBack: leafletBack, showDetailFromLeaflet: showDetailFromLeaflet,
+      leafletDataOf: leafletDataOf, leafletAvailable: leafletAvailable, leafletBodyHTML: leafletBodyHTML,
+      leafletOpenHTML: leafletOpenHTML, leafletHas: leafletHas, leafletList: leafletList, leafletInfoTable: leafletInfoTable,
       renderCats: renderCats, renderGrid: renderGrid, categories: categories,
       orderNo: orderNo,
       lineSections: lineSections, catOrder: CAT_ORDER, lineCats: CAT_ORDER, seedOrder: SEED_ORDER, reorderSeedProducts: reorderSeedProducts,
