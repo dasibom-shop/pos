@@ -721,9 +721,33 @@ body.gate-locked .cart-bar{ display:none !important; }
 .stock-filters input[type="search"]{ min-width:140px; flex:1 1 140px; }
 .stock-row-actions{ display:flex; gap:4px; flex-wrap:nowrap; }
 .stock-row-actions .btn{ padding:0 8px; }
-.hist-row{ cursor:default; }
+
+/* 재고 목록 — 표 대신 줄 단위 목록(모바일에서 가로 스크롤 없음) */
+.stock-list,.hist-list{ display:flex; flex-direction:column; }
+.stock-item{
+  display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 12px;
+  align-items:center; padding:11px 2px; border-bottom:1px solid #f3ecf5;
+}
+.si-head{ display:flex; align-items:center; gap:7px; min-width:0; flex-wrap:wrap; }
+.si-name{ font-size:13px; font-weight:800; letter-spacing:-.02em; }
+.si-meta{ grid-column:1/2; font-size:11px; color:var(--muted); line-height:1.5; }
+.si-nums{ grid-column:1/2; display:flex; gap:14px; align-items:baseline; font-size:11.5px; color:var(--muted); }
+.si-nums b{ font-size:15px; color:var(--ink); letter-spacing:-.03em; font-variant-numeric:tabular-nums; }
+.si-actions{ grid-column:2/3; grid-row:1/3; display:flex; gap:4px; flex-wrap:wrap; justify-content:flex-end; }
+.si-actions .btn{ padding:0 9px; }
+.hist-item{ display:flex; flex-direction:column; gap:2px; padding:10px 2px; border-bottom:1px solid #f3ecf5; }
+.hi-top{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-size:11px; color:var(--muted); }
+.hi-main{ font-size:12.5px; font-weight:700; letter-spacing:-.01em; }
+.hi-main .sub{ font-weight:600; margin-left:4px; }
+.hi-nums{ font-size:11.5px; color:var(--muted); font-variant-numeric:tabular-nums; }
+.hi-nums b{ font-size:12.5px; }
 .hist-delta.pos{ color:#22643c; font-weight:800; }
 .hist-delta.neg{ color:var(--danger); font-weight:800; }
+.list-empty{ padding:26px 8px; text-align:center; color:var(--muted); font-size:12.5px; }
+@media (max-width: 640px){
+  .stock-item{ grid-template-columns:minmax(0,1fr); gap:3px; }
+  .si-actions{ grid-column:1/2; grid-row:auto; justify-content:flex-start; margin-top:4px; }
+}
 
 .mon-cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(184px,1fr)); gap:10px; }
 .mon-card{
@@ -4457,36 +4481,35 @@ body.gate-locked .cart-bar{ display:none !important; }
       var cls = r.state === 'out' ? 'out' : (r.state === 'low' ? 'low' : 'ok');
       var lg = r.log;
       var lastTxt = lg
-        ? '<div class="sub">' + (lg.qty > 0 ? '+' : '') + lg.qty + ' · ' + fmtDateTime(lg.at) + '</div>'
-        : '<div class="sub">—</div>';
-      return '<tr>' +
-        '<td><div class="nm">' + esc(p.name) + '</div><div class="sub">' + esc(p.category || '기타') +
-        (p.visible === false ? ' · 비노출' : '') + '</div></td>' +
-        '<td class="num"><b>' + r.qty + '</b></td>' +
-        '<td class="num">' + r.safety + '</td>' +
-        '<td><span class="badge ' + cls + '">' + esc(stockStateLabel(r.state)) + '</span></td>' +
-        '<td>' + lastTxt + '</td>' +
-        '<td><div class="stock-row-actions">' +
+        ? '최근 변동 ' + (lg.qty > 0 ? '+' : '') + lg.qty + ' · ' + fmtDateTime(lg.at)
+        : '변동 없음';
+      return '<div class="stock-item" data-id="' + esc(p.id) + '">' +
+        '<div class="si-head"><span class="si-name">' + esc(p.name) + '</span>' +
+        '<span class="badge ' + cls + '">' + esc(stockStateLabel(r.state)) + '</span></div>' +
+        '<div class="si-meta">' + esc(p.category || '기타') +
+        (p.visible === false ? ' · 비노출' : '') + ' · ' + lastTxt + '</div>' +
+        '<div class="si-nums"><span>현재고 <b>' + r.qty + '</b>개</span>' +
+        '<span>안전재고 <b>' + r.safety + '</b>개</span></div>' +
+        '<div class="si-actions">' +
         '<button type="button" class="btn xs" data-act="stock:new" data-type="in" data-id="' + esc(p.id) + '">입고</button>' +
         '<button type="button" class="btn xs" data-act="stock:new" data-type="out" data-id="' + esc(p.id) + '">출고</button>' +
         '<button type="button" class="btn xs" data-act="stock:new" data-type="adjust" data-id="' + esc(p.id) + '">조정</button>' +
         '<button type="button" class="btn xs" data-act="stock:safety" data-id="' + esc(p.id) + '">안전</button>' +
-        '</div></td></tr>';
+        '</div></div>';
     }).join('');
 
     var logs = stockLogsFiltered().slice(0, 200);
     var logRows = logs.map(function (l) {
-      return '<tr class="hist-row">' +
-        '<td><div class="sub">' + fmtDateTime(l.at) + '</div></td>' +
-        '<td>' + esc(l.branchName || branchNameOf(l.branchId) || '-') + '</td>' +
-        '<td><div class="nm">' + esc(l.name || (productById(l.productId) || {}).name || '-') + '</div>' +
-        (l.orderNo ? '<div class="sub">' + esc(l.orderNo) + '</div>' : '') + '</td>' +
-        '<td><span class="badge ' + (l.type === 'out' || l.type === 'loss' ? 'out' : 'ok') + '">' +
-        esc(stockLogLabel(l)) + '</span></td>' +
-        '<td class="num"><span class="hist-delta ' + (l.qty >= 0 ? 'pos' : 'neg') + '">' +
-        (l.qty > 0 ? '+' : '') + int(l.qty) + '</span></td>' +
-        '<td class="num">' + int(l.after) + '</td>' +
-        '<td><div class="sub">' + esc(l.memo || '-') + '</div></td></tr>';
+      return '<div class="hist-item">' +
+        '<div class="hi-top"><span>' + fmtDateTime(l.at) + '</span>' +
+        '<span class="badge ' + (l.type === 'out' || l.type === 'loss' ? 'out' : 'ok') + '">' +
+        esc(stockLogLabel(l)) + '</span>' +
+        '<span>' + esc(l.branchName || branchNameOf(l.branchId) || '-') + '</span></div>' +
+        '<div class="hi-main">' + esc(l.name || (productById(l.productId) || {}).name || '-') +
+        (l.orderNo ? '<span class="sub">' + esc(l.orderNo) + '</span>' : '') + '</div>' +
+        '<div class="hi-nums"><span class="hist-delta ' + (l.qty >= 0 ? 'pos' : 'neg') + '">' +
+        (l.qty > 0 ? '+' : '') + int(l.qty) + '</span> → ' + int(l.after) + '개' +
+        (l.memo ? ' · ' + esc(l.memo) : '') + '</div></div>';
     }).join('');
 
     return '<div style="display:flex;flex-direction:column;gap:12px">' +
@@ -4503,10 +4526,9 @@ body.gate-locked .cart-bar{ display:none !important; }
       '<select id="stockCat">' + catOpts + '</select>' +
       '<select id="stockState">' + stateOpts + '</select>' +
       '<input type="search" id="stockQuery" placeholder="품목 검색" value="' + esc(ui.stockQuery || '') + '"></div>' +
-      '<div class="table-wrap"><table class="tbl"><thead><tr><th>품목</th><th class="num">현재고</th>' +
-      '<th class="num">안전재고</th><th>상태</th><th>최근 변동</th><th>빠른 입출고</th></tr></thead><tbody>' +
-      (body || '<tr><td colspan="6" class="tbl-empty">조건에 맞는 품목이 없습니다.</td></tr>') +
-      '</tbody></table></div></div>' +
+      '<div class="stock-list">' +
+      (body || '<div class="list-empty">조건에 맞는 품목이 없습니다.</div>') +
+      '</div></div>' +
 
       '<div class="panel"><div class="panel-head"><h2>입출고 이력</h2>' +
       '<span class="hint">최신 200건 표시 · CSV는 전체 내보내기</span><span class="spacer"></span>' +
@@ -4518,10 +4540,9 @@ body.gate-locked .cart-bar{ display:none !important; }
       '<select id="stockHistType"><option value="all">전체 구분</option>' + STOCK_TYPES.map(function (t) {
         return '<option value="' + t.v + '"' + ((ui.stockHistType || 'all') === t.v ? ' selected' : '') + '>' + t.label + '</option>';
       }).join('') + '</select></div>' +
-      '<div class="table-wrap"><table class="tbl"><thead><tr><th>일시</th><th>지점</th><th>품목</th>' +
-      '<th>구분</th><th class="num">변동</th><th class="num">변동후</th><th>사유/메모</th></tr></thead><tbody>' +
-      (logRows || '<tr><td colspan="7" class="tbl-empty">아직 입출고 이력이 없습니다. 입고를 등록하면 여기에 쌓입니다.</td></tr>') +
-      '</tbody></table></div></div></div>';
+      '<div class="hist-list">' +
+      (logRows || '<div class="list-empty">아직 입출고 이력이 없습니다. 입고를 등록하면 여기에 쌓입니다.</div>') +
+      '</div></div></div>';
   }
 
   /* 입출고 등록 모달 — 지점·품목·구분·수량·사유·안전재고 */
